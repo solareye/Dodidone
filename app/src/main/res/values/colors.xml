@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="actionbar_color">#4CAF50</color>
+    <color name="header_bgnd">#303F9F</color>
+
+    <color name="primary">#3f51b5</color>
+    <color name="primary_pressed">#303f9f</color>
+    <color name="ripple">#ff80ab</color>
+    <color name="accent">#ff4081</color>
+    <color name="accent_pressed">#f50057</color>
+
+    <color name="blue">#03a9f4</color>
+    <color name="purple">#b39ddb</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources>

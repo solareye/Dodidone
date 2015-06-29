@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Dodidone</string>
+    <string name="idleness">Idleness</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_save">SAVE</string>
+    <string name="partial">Partial</string>
+    <string name="full">full</string>
+    <string name="title_activity_create">New Create</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="event_name">Название события</string>
+    <string name="event_repeat">Повтор события:</string>
+    <string name="event_repeat_till">Повторять до:</string>
+    <string name="event_comment">Комментарии</string>
+
+    <string name="achieve">Выполнено</string>
+    <string name="delete">Удалить</string>
+
+    <string-array name="reminders">
+        <item>No notification</item>
+        <item>за 5 минут</item>
+        <item>за 30 минут</item>
+        <item>за 1 час</item>
+        <item>за 1 день</item>
+    </string-array>
+
+    <string name="permission_label">Доступ к списку задач Dodidone</string>
+    <string name="permission_description">Возможность получить разрешение на чтение к списку задач Dodidone</string>
+    <string name="provider_label">Задачи Dodidone</string>
+
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">I\'M DODIDONE\nBITCH</string>
+
+</resources>

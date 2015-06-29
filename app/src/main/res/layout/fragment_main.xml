@@ -1,0 +1,78 @@
+<mobile.solareye.dodidone.customviews.CrossFadeSlidingPaneLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sliding_pane_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="@dimen/side_pane_width"
+        android:layout_height="match_parent">
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:showOtherDates="false"
+            android:padding="34dp"
+            android:alpha="0"/>
+
+        <LinearLayout
+            android:layout_width="@dimen/partial_pane_width"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_today"
+                android:background="@color/dim_foreground_disabled_material_dark"
+                android:layout_marginTop="34dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_preferences"
+                android:background="@color/dim_foreground_disabled_material_dark"
+                android:layout_marginTop="34dp"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/partial_pane_width"
+        android:padding="4dp"
+        tools:context=".MainActivity$PlaceholderFragment">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/idleness" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/my_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_action_content_new"
+            android:tint="@color/abc_primary_text_disable_only_material_dark"
+            fab:fab_colorNormal="@color/primary"
+            fab:fab_colorPressed="@color/primary_pressed"
+            fab:fab_colorRipple="@color/ripple"
+            />
+
+    </RelativeLayout>
+</mobile.solareye.dodidone.customviews.CrossFadeSlidingPaneLayout>
