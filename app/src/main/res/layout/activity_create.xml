@@ -1,124 +1,133 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="mobile.solareye.dodidone.CreateActivity">
 
     <mobile.solareye.dodidone.customviews.RevealBackgroundView
         android:id="@+id/vRevealBackground"
         android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_toolbar" />
+
+    <TableLayout android:id="@+id/content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="?attr/actionBarSize">
 
-    <EditText
-        android:id="@+id/event_name_et"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/event_name" />
 
-    <TableRow android:layout_margin="10dp">
+        <EditText
+            android:id="@+id/event_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/event_name" />
+
+        <TableRow android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="All-day" />
+
+            <Switch
+                android:id="@+id/all_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0" />
+
+        </TableRow>
+
+        <TableRow android:layout_margin="10dp">
+
+            <TextView
+                android:id="@+id/event_date_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="event_date_onClick"
+                android:text="2 may 2015" />
+
+            <TextView
+                android:id="@+id/event_time_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="0"
+                android:onClick="event_time_onClick"
+                android:text="15:30" />
+
+        </TableRow>
+
+        <TableRow android:layout_margin="10dp">
+
+            <TextView
+                android:id="@+id/event_date_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="event_date_onClick"
+                android:text="2 may 2015" />
+
+            <TextView
+                android:id="@+id/event_time_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="0"
+                android:onClick="event_time_onClick"
+                android:text="16:30" />
+
+        </TableRow>
+
+        <TableRow android:layout_margin="10dp">
+
+            <TextView
+                android:id="@+id/event_repeat_till"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="event_repeat_till_onClick"
+                android:text="@string/event_repeat" />
+
+            <TextView
+                android:id="@+id/event_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:onClick="event_repeat_onClick"
+                android:text="@string/event_repeat_till" />
+
+        </TableRow>
+
+        <EditText
+            android:id="@+id/event_comment_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/event_comment" />
 
         <TextView
+            android:id="@+id/event_reminder_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="All-day" />
-
-        <Switch
-            android:id="@+id/all_day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0" />
-
-    </TableRow>
-
-    <TableRow android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:onClick="event_reminder_onClick"
+            android:text="за 30 минут" />
 
         <TextView
-            android:id="@+id/event_date_start"
+            android:id="@+id/event_reminder_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="2 may 2015"
-            android:onClick="event_date_onClick" />
+            android:layout_margin="10dp"
+            android:onClick="event_reminder_onClick"
+            android:text="за 5 минут" />
 
-        <TextView
-            android:id="@+id/event_time_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_weight="0"
-            android:text="15:30"
-            android:onClick="event_time_onClick"/>
-
-    </TableRow>
-
-    <TableRow android:layout_margin="10dp">
-
-        <TextView
-            android:id="@+id/event_date_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="2 may 2015"
-            android:onClick="event_date_onClick"/>
-
-        <TextView
-            android:id="@+id/event_time_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_weight="0"
-            android:text="16:30"
-            android:onClick="event_time_onClick"/>
-
-    </TableRow>
-
-    <TableRow android:layout_margin="10dp">
-
-        <TextView
-            android:id="@+id/event_repeat_till"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/event_repeat"
-            android:onClick="event_repeat_till_onClick"/>
-
-        <TextView
-            android:id="@+id/event_repeat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="@string/event_repeat_till"
-            android:onClick="event_repeat_onClick"/>
-
-    </TableRow>
-
-    <EditText
-        android:id="@+id/event_comment_et"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/event_comment" />
-
-    <TextView
-        android:id="@+id/event_reminder_first"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="за 30 минут"
-        android:onClick="event_reminder_onClick"/>
-
-    <TextView
-        android:id="@+id/event_reminder_second"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="за 5 минут"
-        android:onClick="event_reminder_onClick"/>
-
-</TableLayout>
+    </TableLayout>
+</FrameLayout>

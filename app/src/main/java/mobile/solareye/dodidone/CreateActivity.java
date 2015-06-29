@@ -6,13 +6,17 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -20,36 +24,54 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import mobile.solareye.dodidone.customviews.RevealBackgroundView;
 
 
-public class CreateActivity extends ActionBarActivity implements RevealBackgroundView.OnStateChangeListener {
+public class CreateActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener {
 
     public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
     private SimpleDateFormat sdf = new SimpleDateFormat("E, MMM d, yyyy");
+    private boolean pendingIntroAnimation;
 
+    private MenuItem inboxMenuItem;
 
-    @InjectView(R.id.vRevealBackground)
+    @Bind(R.id.vRevealBackground)
     RevealBackgroundView vRevealBackground;
-    /*@InjectView(R.id.textviewcreate)
+    /*@Bind(R.id.textviewcreate)
     View textviewcreate;*/
-    @InjectView(R.id.event_time_start)
+    @Bind(R.id.event_time_start)
     TextView event_time_start;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind (R.id.content)
+    TableLayout content;
+    @Bind(R.id.ivLogo)
+    ImageView ivLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
-        //setupRevealBackground(savedInstanceState);
+        if (savedInstanceState == null) {
+            pendingIntroAnimation = true;
+        }
+
+        initToolbar();
+
+        setupRevealBackground(savedInstanceState);
+    }
+
+    private void initToolbar() {
+        setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setupRevealBackground(Bundle savedInstanceState) {
-        vRevealBackground = (RevealBackgroundView) findViewById(R.id.vRevealBackground);
-        vRevealBackground.setFillPaintColor(0xFF16181A);
+        //vRevealBackground.setFillPaintColor(0xFF16181A);
         vRevealBackground.setOnStateChangeListener(this);
         if (savedInstanceState == null) {
             final int[] startingLocation = getIntent().getIntArrayExtra(ARG_REVEAL_START_LOCATION);
@@ -70,6 +92,14 @@ public class CreateActivity extends ActionBarActivity implements RevealBackgroun
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_create, menu);
+        inboxMenuItem = menu.findItem(R.id.action_save);
+        //inboxMenuItem.setActionView(R.layout.actionview_menu);
+
+        if (pendingIntroAnimation) {
+            pendingIntroAnimation = false;
+            //startIntroAnimation();
+        }
+
         return true;
     }
 
@@ -97,12 +127,9 @@ public class CreateActivity extends ActionBarActivity implements RevealBackgroun
     @Override
     public void onStateChange(int state) {
         if (RevealBackgroundView.STATE_FINISHED == state) {
-            //textviewcreate.setVisibility(View.VISIBLE);
-            /*if (pendingIntro) {
-                startIntroAnimation();
-            }*/
+            content.setVisibility(View.VISIBLE);
         } else {
-            //textviewcreate.setVisibility(View.INVISIBLE);
+            content.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -111,7 +138,7 @@ public class CreateActivity extends ActionBarActivity implements RevealBackgroun
     }
 
     public void event_time_onClick(View v) {
-        createTimePickerDialog((TextView)v);
+        createTimePickerDialog((TextView) v);
     }
 
     public void event_repeat_till_onClick(View v) {
@@ -169,5 +196,44 @@ public class CreateActivity extends ActionBarActivity implements RevealBackgroun
             }
         });
         builder.create().show();
+    }
+
+    private static final int ANIM_DURATION_TOOLBAR = 300;
+
+    private void startIntroAnimation() {
+
+        int actionbarSize = 0;
+
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionbarSize = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+
+
+        toolbar.setTranslationY(-actionbarSize);
+        ivLogo.setTranslationY(-actionbarSize);
+        View actionView = inboxMenuItem.getActionView();
+        actionView.setTranslationY(-actionbarSize);
+
+        toolbar.animate()
+                .translationY(0)
+                .setDuration(ANIM_DURATION_TOOLBAR)
+                .setStartDelay(300);
+        ivLogo.animate()
+                .translationY(0)
+                .setDuration(ANIM_DURATION_TOOLBAR)
+                .setStartDelay(400);
+        inboxMenuItem.getActionView().animate()
+                .translationY(0)
+                .setDuration(ANIM_DURATION_TOOLBAR)
+                .setStartDelay(500)
+                .setListener(new android.animation.AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+                })
+                .start();
     }
 }

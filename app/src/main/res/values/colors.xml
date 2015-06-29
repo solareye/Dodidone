@@ -13,4 +13,7 @@
     <color name="purple">#b39ddb</color>
 
     <color name="black_overlay">#66000000</color>
+
+    <color name="btn_ripple_normal">#00000000</color>
+    <color name="btn_ripple_pressed">#40ffffff</color>
 </resources>

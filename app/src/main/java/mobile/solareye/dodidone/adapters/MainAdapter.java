@@ -19,18 +19,14 @@ import mobile.solareye.dodidone.listeners.SetingCursorListener;
  */
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements SetingCursorListener/*implements View.OnClickListener*/ {
 
-    /*private List<EventModel> mDataset;
-    private EventsDataProvider eventsDataProvider;*/
     private Context mContext;
     FragmentManager fragmentManager;
     private final int CARD_TYPE_FULL = 1;
     private final int CARD_TYPE_FREE_TIME = 2;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MainAdapter(Context context, /*EventsDataProvider eventsDataProvider,*/ FragmentManager fragmentManager) {
+    public MainAdapter(Context context, FragmentManager fragmentManager) {
         this.mContext = context;
-        /*this.eventsDataProvider = eventsDataProvider;
-        this.mDataset = eventsDataProvider.getItems();*/
         this.fragmentManager = fragmentManager;
 
         setHasStableIds(true);
@@ -47,29 +43,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public class ViewHolder extends RecyclerView.ViewHolder/* implements View.OnClickListener*/ {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
         public CardView cardView;
         public TextView freeTimeTV;
 
-        //public LinearLayout llExpandArea;
         public ViewHolder(View v) {
             super(v);
             mTextView = (TextView) v.findViewById(R.id.info_text);
 
             freeTimeTV = (TextView) v.findViewById(R.id.free_time_tv);
-            //llExpandArea = (LinearLayout) itemView.findViewById(R.id.llExpandArea);
 
             cardView = (CardView) v.findViewById(R.id.card_view);
-            /*if(cardView != null)
-                cardView.setOnClickListener(this);*/
         }
 
-       /*@Override
-        public void onClick(View v) {
-
-        }*/
     }
 
     @Override
@@ -102,10 +90,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         return new ViewHolder(v);
     }
 
-    /*@Override
+    @Override
     public long getItemId(int position) {
-        return mDataset.get(position).hashCode();
-    }*/
+        if (mCursor != null) {
+            mCursor.moveToPosition(position);
+            return mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events._ID));
+        }
+        return -1;
+    }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override

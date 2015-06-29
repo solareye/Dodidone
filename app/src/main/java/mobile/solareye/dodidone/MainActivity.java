@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +16,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SlidingPaneLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +30,6 @@ import android.widget.Toast;
 
 import com.eowise.recyclerview.stickyheaders.OnHeaderClickListener;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
-import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.hudomju.swipe.OnItemClickListener;
 import com.hudomju.swipe.SwipeableItemClickListener;
 import com.hudomju.swipe.adapter.RecyclerViewAdapter;
@@ -37,13 +37,13 @@ import com.melnykov.fab.FloatingActionButton;
 
 import mobile.solareye.dodidone.adapters.HeaderAdapter;
 import mobile.solareye.dodidone.adapters.MainAdapter;
-import mobile.solareye.dodidone.listeners.SetingCursorListener;
 import mobile.solareye.dodidone.customviews.SwipeToDismissTouchListener;
+import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
-import mobile.solareye.dodidone.data.EventsDataProvider;
+import mobile.solareye.dodidone.listeners.SetingCursorListener;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static RecyclerView mRecyclerView;
     private static RecyclerView.Adapter mAdapter;
@@ -197,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
 
             mRecyclerView.setOnTouchListener(touchListener);
             mRecyclerView.setOnScrollListener((RecyclerView.OnScrollListener)touchListener.makeScrollListener());
-            /*mRecyclerView.addOnItemTouchListener(new SwipeableItemClickListener(mActivity,
+            mRecyclerView.addOnItemTouchListener(new SwipeableItemClickListener(mActivity,
                     new OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
@@ -207,14 +207,18 @@ public class MainActivity extends ActionBarActivity {
                             } else if (id == R.id.txt_undo) {
                                 touchListener.undoPendingDismiss();
                             } else if(id != R.id.toggle_sound && id != R.id.free_time_tv) {
-                                DetailDialogFragment ddf = new DetailDialogFragment();
+                                /*DetailDialogFragment ddf = new DetailDialogFragment();
                                 Bundle bundle = new Bundle();
-                                bundle.putSerializable("Event", eventsDataProvider.getItems().get(position));
+                                bundle.putSerializable("Event", .getItems().get(position));
                                 ddf.setArguments(bundle);
-                                ddf.show(mActivity.getSupportFragmentManager(), "Dialog");
+                                ddf.show(mActivity.getSupportFragmentManager(), "Dialog");*/
+
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("position", position);
+                                getLoaderManager().restartLoader(SELECTED_EVENT_LOADER_ID, bundle, PlaceholderFragment.this);
                             }
                         }
-                    }));*/
+                    }));
 
             LoaderManager loaderManager = getLoaderManager();
             loaderManager.initLoader(EVENTS_LOADER_ID, null, this);
@@ -266,9 +270,14 @@ public class MainActivity extends ActionBarActivity {
                     );
 
                 case SELECTED_EVENT_LOADER_ID:
+
+                    int position = args.getInt("position");
+
+                    long event_id = mAdapter.getItemId(position);
+
                     return new CursorLoader(
                             mActivity,
-                            ContentUris.withAppendedId(EventsContract.Events.CONTENT_URI, args.getLong(EVENT_ID_KEY)),
+                            ContentUris.withAppendedId(EventsContract.Events.CONTENT_URI, event_id),
                             null,
                             null,
                             null,
@@ -294,9 +303,19 @@ public class MainActivity extends ActionBarActivity {
                 case SELECTED_EVENT_LOADER_ID:
                     if (cursor != null) {
 
-                        // get selected event id and go to DetailDialogFragment
+                        EventModel event = getEvent(cursor);
+                        long id = cursor.getLong(cursor.getColumnIndex(EventsContract.Events._ID));
 
-                        //mEditingCityId = cursor.getLong(cursor.getColumnIndex(CitiesContract.Cities._ID));
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("Event", event);
+                        bundle.putLong("Event_id", id);
+
+                        Message message = new Message();
+                        message.setData(bundle);
+                        message.what = 2;
+
+
+                                handler.sendMessage(message);
 
                     } else {
                         //resetCityEditingForm();
@@ -329,5 +348,30 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
+        private Handler handler = new Handler()  {
+            @Override
+            public void handleMessage(Message msg) {
+
+                if(msg.what == 2) {
+                    DetailDialogFragment ddf = new DetailDialogFragment();
+                    Bundle bundle = msg.getData();
+                    ddf.setArguments(bundle);
+                    ddf.show(mActivity.getSupportFragmentManager(), "Dialog");
+                }
+            }
+        };
+
+        EventModel getEvent(Cursor cursor) {
+
+            long id = cursor.getLong(cursor.getColumnIndex(EventsContract.Events._ID));
+            String name = cursor.getString(cursor.getColumnIndex(EventsContract.Events.EVENT_NAME));
+            long dateStart = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+            long dateEnd = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END));
+            long duration = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DURATION));
+            long reminder = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER));
+            String details = cursor.getString(cursor.getColumnIndex(EventsContract.Events.EVENT_DETAILS));
+
+            return new EventModel((int)id, name, dateStart, dateEnd, duration, reminder, details);
+        }
     }
 }

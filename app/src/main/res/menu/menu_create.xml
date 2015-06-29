@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="mobile.solareye.dodidone.CreateActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_inbox_white"
         android:title="@string/action_save"
         app:showAsAction="always" />
 </menu>

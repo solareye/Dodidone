@@ -10,9 +10,7 @@ import android.widget.TextView;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
-import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.R;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;

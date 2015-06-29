@@ -1,22 +1,20 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+    <style name="AppTheme.TransparentActivity">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Main theme colors -->
         <!--   darker variant for the status bar and contextual app bars -->
-        <item name="android:colorPrimary">@color/actionbar_color</item>
+        <item name="colorPrimary">@color/actionbar_color</item>
 
-        <item name="android:colorPrimaryDark">#388E3C</item>
+        <item name="colorPrimaryDark">#388E3C</item>
         <!--   theme UI controls like checkboxes and text fields -->
-        <item name="android:colorAccent">#81C784</item>
-
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
-        <item name="actionBarStyle">@style/MyActionBar</item>
-
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowAllowEnterTransitionOverlap">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-
+        <item name="colorAccent">#81C784</item>
     </style>
 
     <style name="MyActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
