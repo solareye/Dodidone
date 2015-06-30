@@ -2,6 +2,7 @@ package mobile.solareye.dodidone;
 
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +37,8 @@ import com.hudomju.swipe.SwipeableItemClickListener;
 import com.hudomju.swipe.adapter.RecyclerViewAdapter;
 import com.melnykov.fab.FloatingActionButton;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import mobile.solareye.dodidone.adapters.HeaderAdapter;
 import mobile.solareye.dodidone.adapters.MainAdapter;
 import mobile.solareye.dodidone.customviews.SwipeToDismissTouchListener;
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static RecyclerView.Adapter mAdapter;
     private static HeaderAdapter headerAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
@@ -86,11 +91,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment implements OnHeaderClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+
+        @Bind(R.id.toolbar)
+        Toolbar toolbar;
 
         FloatingActionButton btnCreate;
 
@@ -103,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
         private FragmentActivity mActivity;
 
-        public PlaceholderFragment() { }
+        public PlaceholderFragment() {
+        }
 
         @Override
         public void onAttach(Activity activity) {
@@ -117,7 +125,11 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            return inflater.inflate(R.layout.fragment_main, container, false);
+            View view = inflater.inflate(R.layout.fragment_main, container, false);
+
+            ButterKnife.bind(this, view);
+
+            return view;
         }
 
         @Override
@@ -142,15 +154,16 @@ public class MainActivity extends AppCompatActivity {
             // use a linear layout manager
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
 
-            //eventsDataProvider = new EventsDataProvider();
+            initToolbar();
+        }
 
-
-            // specify an adapter (see also next example)
-            //mRecyclerView.setAdapter(mAdapter);
+        void initToolbar() {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         @Override
-            public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             Log.d(TAG, "onActivityCreated");
             super.onActivityCreated(savedInstanceState);
 
@@ -196,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                             });
 
             mRecyclerView.setOnTouchListener(touchListener);
-            mRecyclerView.setOnScrollListener((RecyclerView.OnScrollListener)touchListener.makeScrollListener());
+            mRecyclerView.setOnScrollListener((RecyclerView.OnScrollListener) touchListener.makeScrollListener());
             mRecyclerView.addOnItemTouchListener(new SwipeableItemClickListener(mActivity,
                     new OnItemClickListener() {
                         @Override
@@ -206,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                                 touchListener.processPendingDismisses();
                             } else if (id == R.id.txt_undo) {
                                 touchListener.undoPendingDismiss();
-                            } else if(id != R.id.toggle_sound && id != R.id.free_time_tv) {
+                            } else if (id != R.id.toggle_sound && id != R.id.btn_sound && id != R.id.free_time_tv) {
                                 /*DetailDialogFragment ddf = new DetailDialogFragment();
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("Event", .getItems().get(position));
@@ -239,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onHeaderClick(View header, long headerId) {
 
-            TextView text = (TextView)header.findViewById(R.id.section_text);
+            TextView text = (TextView) header.findViewById(R.id.section_text);
             Toast.makeText(mActivity, "Click on " + text.getText(), Toast.LENGTH_SHORT).show();
         }
 
@@ -296,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
 
             switch (loader.getId()) {
                 case EVENTS_LOADER_ID:
-                    ((SetingCursorListener)mAdapter).onSetCursor(cursor);
+                    ((SetingCursorListener) mAdapter).onSetCursor(cursor);
                     headerAdapter.onSetCursor(cursor);
                     break;
 
@@ -315,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
                         message.what = 2;
 
 
-                                handler.sendMessage(message);
+                        handler.sendMessage(message);
 
                     } else {
                         //resetCityEditingForm();
@@ -335,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 
             switch (loader.getId()) {
                 case EVENTS_LOADER_ID:
-                    ((SetingCursorListener)mAdapter).onSetCursor(null);
+                    ((SetingCursorListener) mAdapter).onSetCursor(null);
                     break;
 
                 case SELECTED_EVENT_LOADER_ID:
@@ -348,11 +361,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        private Handler handler = new Handler()  {
+        private Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
 
-                if(msg.what == 2) {
+                if (msg.what == 2) {
                     DetailDialogFragment ddf = new DetailDialogFragment();
                     Bundle bundle = msg.getData();
                     ddf.setArguments(bundle);
@@ -371,7 +384,8 @@ public class MainActivity extends AppCompatActivity {
             long reminder = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER));
             String details = cursor.getString(cursor.getColumnIndex(EventsContract.Events.EVENT_DETAILS));
 
-            return new EventModel((int)id, name, dateStart, dateEnd, duration, reminder, details);
+            return new EventModel((int) id, name, dateStart, dateEnd, duration, reminder, details);
         }
+
     }
 }

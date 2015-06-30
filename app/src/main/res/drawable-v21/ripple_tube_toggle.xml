@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:colorControlHighlight">
+    <item>
+        <selector>
+            <item android:state_checked="false">
+                <bitmap
+                    android:src="@drawable/tuba_inactive"
+                    android:alpha="?android:attr/disabledAlpha" />
+            </item>
+            <item android:state_checked="true">
+                <bitmap android:src="@drawable/tuba_active" />
+            </item>
+        </selector>
+    </item>
+
+</ripple>

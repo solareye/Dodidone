@@ -13,7 +13,8 @@
         android:id="@+id/toolbar"
         layout="@layout/view_toolbar" />
 
-    <TableLayout android:id="@+id/content"
+    <TableLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -52,7 +53,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/ripple_btn"
                 android:onClick="event_date_onClick"
+                android:padding="5dp"
                 android:text="2 may 2015" />
 
             <TextView
@@ -61,7 +64,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_weight="0"
+                android:background="@drawable/ripple_btn"
                 android:onClick="event_time_onClick"
+                android:padding="5dp"
                 android:text="15:30" />
 
         </TableRow>
@@ -73,7 +78,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/ripple_btn"
                 android:onClick="event_date_onClick"
+                android:padding="5dp"
                 android:text="2 may 2015" />
 
             <TextView
@@ -82,14 +89,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_weight="0"
+                android:background="@drawable/ripple_btn"
                 android:onClick="event_time_onClick"
+                android:padding="5dp"
                 android:text="16:30" />
 
         </TableRow>
 
         <TableRow android:layout_margin="10dp">
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/event_repeat_till"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,13 +106,29 @@
                 android:onClick="event_repeat_till_onClick"
                 android:text="@string/event_repeat" />
 
-            <TextView
+            -->
+
+            <Spinner
                 android:id="@+id/event_repeat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:onClick="event_repeat_onClick"
-                android:text="@string/event_repeat_till" />
+                android:layout_weight="0" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/event_repeat_till"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:background="@drawable/ripple_btn"
+                    android:onClick="event_repeat_till_onClick"
+                    android:padding="5dp"
+                    android:text="@string/event_repeat_till" />
+            </FrameLayout>
 
         </TableRow>
 
@@ -117,17 +142,22 @@
             android:id="@+id/event_reminder_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/ripple_btn"
             android:onClick="event_reminder_onClick"
+            android:padding="5dp"
             android:text="за 30 минут" />
 
         <TextView
             android:id="@+id/event_reminder_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/ripple_btn"
             android:onClick="event_reminder_onClick"
+            android:padding="5dp"
             android:text="за 5 минут" />
+
 
     </TableLayout>
 </FrameLayout>

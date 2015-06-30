@@ -19,60 +19,75 @@
                 android:id="@+id/start_stop_time_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:gravity="center"
                 android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="5dp"
                 android:text="10:00\n12:20"
-                android:textSize="22sp"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#494949"/>
-
-            <TextView
-                android:id="@+id/duration_time_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:text="2 часа\n20 минут"
-                android:textSize="22sp"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#494949"/>
-
-            <TextView
-                android:id="@+id/info_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="vvv"
-                android:maxLines="2"
-                android:ellipsize="end"
                 android:textSize="22sp" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#494949"/>
+                android:background="#494949" />
 
-            <ToggleButton android:id="@+id/toggle_sound"
+            <TextView
+                android:id="@+id/duration_time_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:checked="false"/>
+                android:padding="5dp"
+                android:text="2 часа\n20 минут"
+                android:textSize="22sp" />
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#494949" />
+
+            <TextView
+                android:id="@+id/info_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="2"
+                android:padding="5dp"
+                android:text="vvv"
+                android:textSize="22sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#494949" />
+
+            <ImageButton
+                android:id="@+id/btn_sound"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:alpha="0.7"
+                android:background="@drawable/ripple_tube"
+                android:scaleType="fitCenter"
+                android:src="@drawable/tuba_inactive"
+                android:visibility="gone" />
+
+            <ToggleButton
+                android:id="@+id/toggle_sound"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ripple_tube_toggle"
+                android:checked="false"
+                android:enabled="true"
+                android:gravity="center"
+                android:textOff=""
+                android:textOn="" />
 
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -104,32 +119,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background_floating_material_dark"
         android:orientation="horizontal"
         android:visibility="gone"
-        android:weightSum="3"
-        android:background="@color/background_floating_material_dark">
+        android:weightSum="3">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:id="@+id/txt_do"
-            android:gravity="center"
-            android:text="Deleted"
-            android:clickable="false"
-            android:layout_weight="2"
-            android:hapticFeedbackEnabled="true"
-            android:textColor="@android:color/white"/>
-
-        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:id="@+id/txt_undo"
-            android:drawableStart="@drawable/ic_undobar_undo"
-            android:text="Undo"
+            android:layout_weight="2"
             android:clickable="false"
+            android:gravity="center"
+            android:hapticFeedbackEnabled="true"
+            android:text="Deleted"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/txt_undo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textColor="@android:color/holo_orange_light"/>
+            android:clickable="false"
+            android:drawableLeft="@drawable/ic_undobar_undo"
+            android:drawableStart="@drawable/ic_undobar_undo"
+            android:gravity="center"
+            android:text="Undo"
+            android:textColor="@android:color/holo_orange_light" />
 
     </LinearLayout>
 
@@ -142,10 +158,10 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
+            android:layout_gravity="end|center"
             android:clickable="false"
-            android:layout_gravity="end|center" />
+            android:padding="10dp"
+            android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha" />
 
     </FrameLayout>
 
@@ -158,10 +174,10 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:src="@drawable/abc_btn_check_to_on_mtrl_015"
+            android:layout_gravity="start|center"
             android:clickable="false"
-            android:layout_gravity="start|center" />
+            android:padding="10dp"
+            android:src="@drawable/abc_btn_check_to_on_mtrl_015" />
 
     </FrameLayout>
 

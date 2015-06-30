@@ -14,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -49,6 +51,10 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     TableLayout content;
     @Bind(R.id.ivLogo)
     ImageView ivLogo;
+    @Bind(R.id.event_repeat)
+    Spinner spinnerEventRepeat;
+    @Bind(R.id.event_repeat_till)
+    TextView eventRepeatTill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +134,9 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     public void onStateChange(int state) {
         if (RevealBackgroundView.STATE_FINISHED == state) {
             content.setVisibility(View.VISIBLE);
+
+            initSpinner();
+
         } else {
             content.setVisibility(View.INVISIBLE);
         }
@@ -142,10 +151,6 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     }
 
     public void event_repeat_till_onClick(View v) {
-
-    }
-
-    public void event_repeat_onClick(View v) {
 
     }
 
@@ -235,5 +240,22 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
                     }
                 })
                 .start();
+    }
+
+    private void initSpinner() {
+
+        SimpleDateFormat dayNameFormat = new SimpleDateFormat("cccc");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d");
+
+        String dayName = dayNameFormat.format(new Date());
+        String date = dateFormat.format(new Date());
+
+        String[] dataFirst = new String[] {"нет повторения", "каждый день", "every " + dayName, "каждое " + date + " число", "каждый год"};
+
+        ArrayAdapter<String> adapterFirst = new ArrayAdapter<>(toolbar.getContext(),
+                R.layout.support_simple_spinner_dropdown_item, dataFirst);
+        adapterFirst.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinnerEventRepeat.setAdapter(adapterFirst);
+
     }
 }
