@@ -32,4 +32,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">I\'M DODIDONE\nBITCH</string>
 
+    <string name="float_btn_transition">float_btn_transition</string>
+
 </resources>

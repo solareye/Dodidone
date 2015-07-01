@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import mobile.solareye.dodidone.R;
 import mobile.solareye.dodidone.data.EventsContract;
@@ -37,7 +38,7 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
     @Override
     public void onBindViewHolder(ViewHolder headerViewHolder, int position) {
 
-        if(mCursor != null) {
+        if (mCursor != null) {
             mCursor.moveToPosition(position);
             headerViewHolder.title.setText(convertDate(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START))));
         }
@@ -45,12 +46,8 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
     @Override
     public long getHeaderId(int position) {
-        //return items.get(position).subSequence(0, 1).hashCode();
-        if(mCursor != null) {
-            mCursor.moveToPosition(position);
-            return mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
-        }
-        return 0;
+
+        return convertHeaderId(position);
     }
 
     @Override
@@ -69,7 +66,28 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
         }
     }
 
-    private String convertDate(long date_start){
+    private String convertDate(long date_start) {
         return dateFormatWithoutYear.format(date_start);
+    }
+
+    private long convertHeaderId(int position) {
+
+        if (mCursor != null) {
+            mCursor.moveToPosition(position);
+
+            long headerId = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(headerId);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            return calendar.getTimeInMillis();
+        }
+        return 0;
+
+
     }
 }

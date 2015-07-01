@@ -18,6 +18,8 @@ public class EventModel implements Serializable {
     private String details;
     private String freeTime;
 
+    public EventModel() { }
+
     public EventModel(EventModel eventModel){
         this._id = eventModel.get_id();
         this.name = eventModel.getName();

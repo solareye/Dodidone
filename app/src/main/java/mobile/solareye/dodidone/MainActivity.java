@@ -197,14 +197,21 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onDelete(RecyclerViewAdapter view, int position) {
-                                    //eventsDataProvider.getItems().remove(position);
-                                    mAdapter.notifyItemRemoved(position);
+
+                                    long id = mAdapter.getItemId(position);
+
+                                    mActivity.getContentResolver().delete(EventsContract.Events.CONTENT_URI, EventsContract.Events._ID + " = ?", new String[] {String.valueOf(id)});
+
+                                    //mAdapter.remo
+
+                                    //mAdapter.notifyItemRemoved(position);
+
                                 }
 
                                 @Override
                                 public void onAchieve(RecyclerViewAdapter recyclerView, int position) {
                                     //eventsDataProvider.getItems().remove(position);
-                                    mAdapter.notifyItemRemoved(position);
+                                    //mAdapter.notifyItemRemoved(position);
                                 }
                             });
 
@@ -262,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                 int[] startingLocation = new int[2];
                 btnCreate.getLocationOnScreen(startingLocation);
                 startingLocation[0] += btnCreate.getWidth() / 2;
-                CreateActivity.startFromLocation(startingLocation, mActivity);
+                CreateActivity.startFromLocation(startingLocation, mActivity, v);
                 mActivity.overridePendingTransition(0, 0);
             }
         };

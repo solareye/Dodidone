@@ -1,14 +1,17 @@
 package mobile.solareye.dodidone;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -28,10 +32,15 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import mobile.solareye.dodidone.customviews.RevealBackgroundView;
+import mobile.solareye.dodidone.data.EventModel;
+import mobile.solareye.dodidone.data.EventsContract;
 
 
 public class CreateActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener {
+
+    private String TAG = "CreateActivity";
 
     public static final String ARG_REVEAL_START_LOCATION = "reveal_start_location";
     private SimpleDateFormat sdf = new SimpleDateFormat("E, MMM d, yyyy");
@@ -39,12 +48,21 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
     private MenuItem inboxMenuItem;
 
+    private EventModel eventModel;
+    private Calendar calStart, calStop;
+
     @Bind(R.id.vRevealBackground)
     RevealBackgroundView vRevealBackground;
     /*@Bind(R.id.textviewcreate)
     View textviewcreate;*/
     @Bind(R.id.event_time_start)
     TextView event_time_start;
+    @Bind(R.id.event_time_stop)
+    TextView event_time_stop;
+    @Bind(R.id.event_date_start)
+    TextView event_date_start;
+    @Bind(R.id.event_date_stop)
+    TextView event_date_stop;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind (R.id.content)
@@ -55,6 +73,10 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     Spinner spinnerEventRepeat;
     @Bind(R.id.event_repeat_till)
     TextView eventRepeatTill;
+    @Bind(R.id.event_name_et)
+    EditText eventNameET;
+    @Bind(R.id.event_comment_et)
+    EditText eventCommentET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +91,29 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         initToolbar();
 
         setupRevealBackground(savedInstanceState);
+
+        initData();
     }
 
     private void initToolbar() {
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initData() {
+
+        eventModel = new EventModel();
+
+        calStart = Calendar.getInstance();
+        calStop = Calendar.getInstance();
+        calStop.add(Calendar.HOUR_OF_DAY, 1);
+
+        event_date_start.setText(sdf.format(calStart.getTime()));
+        event_date_stop.setText(sdf.format(calStop.getTime()));
+
+        event_time_start.setText(calStart.get(Calendar.HOUR_OF_DAY) + ":" + calStart.get(Calendar.MINUTE));
+        event_time_stop.setText(calStop.get(Calendar.HOUR_OF_DAY) + ":" + calStart.get(Calendar.MINUTE));
     }
 
     private void setupRevealBackground(Bundle savedInstanceState) {
@@ -111,23 +151,28 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.action_save:
+
+                save();
+
+                return true;
+
+            default: return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
-    public static void startFromLocation(int[] startingLocation, Activity startingActivity) {
+    public static void startFromLocation(int[] startingLocation, Activity startingActivity, View sharedView) {
         Intent intent = new Intent(startingActivity, CreateActivity.class);
         intent.putExtra(ARG_REVEAL_START_LOCATION, startingLocation);
-        startingActivity.startActivity(intent);
+
+        String transitionName = startingActivity.getString(R.string.float_btn_transition);
+
+        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(startingActivity, sharedView, transitionName);
+
+        startingActivity.startActivity(intent, transitionActivityOptions.toBundle());
     }
 
     @Override
@@ -160,14 +205,17 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
     private void createTimePickerDialog(final TextView view) {
 
-
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = view.getId() == R.id.event_time_start ? calStart : calStop;
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
 
         TimePickerDialog tpd = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
 
             public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+
+                cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                cal.set(Calendar.MINUTE, minute);
+
                 view.setText(hourOfDay + ":" + minute);
             }
         }, hour, minute, true);
@@ -176,7 +224,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
     private void createDatePickerDialog(final TextView view) {
 
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = view.getId() == R.id.event_date_start ? calStart : calStop;
         int year = cal.get(Calendar.YEAR);
         int monthOfYear = cal.get(Calendar.MONTH);
         int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
@@ -184,7 +232,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                Calendar cal = Calendar.getInstance();
+                //Calendar cal = Calendar.getInstance();
                 cal.set(year, monthOfYear, dayOfMonth);
                 view.setText(sdf.format(new Date(cal.getTimeInMillis())));
             }
@@ -257,5 +305,65 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         adapterFirst.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinnerEventRepeat.setAdapter(adapterFirst);
 
+    }
+
+    private void save() {
+        
+        ContentValues mNewValues = new ContentValues();
+
+        mNewValues.put(EventsContract.Events.EVENT_NAME, getName());
+        mNewValues.put(EventsContract.Events.EVENT_DATE_START, getDateStart());
+        mNewValues.put(EventsContract.Events.EVENT_DATE_END, getDateStop());
+        mNewValues.put(EventsContract.Events.EVENT_DURATION, getDuration());
+        /*mNewValues.put(EventsContract.Events.EVENT_REMINDER, null);*/
+        mNewValues.put(EventsContract.Events.EVENT_DETAILS, getDetails());
+
+        /*
+
+        Uri mNewUri = getContentResolver().insert(
+                EventsContract.Events.CONTENT_URI,   // the user dictionary content URI
+                mNewValues                          // the values to insert
+        );
+
+        if (mNewUri != null)
+            finish();
+
+        */
+    }
+
+    private String getName() {
+
+        return eventNameET.getText().toString();
+    }
+
+    private SimpleDateFormat sdf2 = new SimpleDateFormat("E, MMM d, yyyy kk:mm");
+
+    private long getDateStart() {
+
+        Log.d(TAG, "Date Start = " + sdf2.format(new Date(calStart.getTimeInMillis())));
+
+        return calStart.getTimeInMillis();
+    }
+
+    private long getDateStop() {
+
+        Log.d(TAG, "Date Stop = " + sdf2.format(new Date(calStop.getTimeInMillis())));
+
+        return calStop.getTimeInMillis();
+    }
+
+    private long getDuration() {
+
+        return getDateStop() - getDateStart();
+    }
+
+    private String getDetails() {
+
+        return eventCommentET.getText().toString();
+    }
+
+    @OnClick(R.id.fab) public void close(View v) {
+
+        this.supportFinishAfterTransition();
     }
 }

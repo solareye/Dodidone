@@ -4,7 +4,7 @@
     tools:context="mobile.solareye.dodidone.CreateActivity">
     <item
         android:id="@+id/action_save"
-        android:icon="@drawable/ic_inbox_white"
+        android:icon="@drawable/ic_menu_save"
         android:title="@string/action_save"
         app:showAsAction="always" />
 </menu>

@@ -141,8 +141,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:clickable="false"
-            android:drawableLeft="@drawable/ic_undobar_undo"
-            android:drawableStart="@drawable/ic_undobar_undo"
+            android:drawableLeft="@drawable/ic_action_undo"
+            android:drawableStart="@drawable/ic_action_undo"
             android:gravity="center"
             android:text="Undo"
             android:textColor="@android:color/holo_orange_light" />
@@ -152,7 +152,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ff0000"
+        android:background="#F44336"
         android:visibility="gone">
 
         <ImageView
@@ -161,14 +161,14 @@
             android:layout_gravity="end|center"
             android:clickable="false"
             android:padding="10dp"
-            android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha" />
+            android:src="@drawable/ic_action_delete" />
 
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#00ff00"
+        android:background="#4CAF50"
         android:visibility="gone">
 
         <ImageView
@@ -177,7 +177,7 @@
             android:layout_gravity="start|center"
             android:clickable="false"
             android:padding="10dp"
-            android:src="@drawable/abc_btn_check_to_on_mtrl_015" />
+            android:src="@drawable/ic_action_done" />
 
     </FrameLayout>
 

@@ -1,6 +1,7 @@
 package mobile.solareye.dodidone.providers;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -95,7 +96,14 @@ public class EventsContentProvider extends ContentProvider {
 
         Log.d(TAG, "insert: " + uri);
 
-        return null;
+        if (mUriMatcher.match(uri) != EVENTS)
+            throw new IllegalArgumentException("Wrong URI: " + uri);
+
+        long rowID = mDatabaseHelper.getWritableDatabase().insert(DatabaseHelper.TABLE_EVENTS, null, values);
+        Uri resultUri = ContentUris.withAppendedId(EventsContract.Events.CONTENT_URI, rowID);
+
+        getContext().getContentResolver().notifyChange(resultUri, null);
+        return resultUri;
     }
 
     @Override
@@ -103,7 +111,11 @@ public class EventsContentProvider extends ContentProvider {
 
         Log.d(TAG, "delete: " + uri);
 
-        return 0;
+        final int deletedRow = mDatabaseHelper.getWritableDatabase().delete(DatabaseHelper.TABLE_EVENTS, selection, selectionArgs);
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return deletedRow;
     }
 
     @Override
