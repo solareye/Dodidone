@@ -37,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + EventsContract.Events.EVENT_DATE_END + " INTEGER, "
                 + EventsContract.Events.EVENT_DURATION + " INTEGER, "
                 + EventsContract.Events.EVENT_REMINDER + " INTEGER, "
+                + EventsContract.Events.EVENT_REMINDER_NOTIFY + " INTEGER, "
                 + EventsContract.Events.EVENT_DETAILS + " TEXT);";
 
         db.execSQL(CREATE_EVENTS_TABLE);

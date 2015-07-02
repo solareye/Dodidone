@@ -24,6 +24,20 @@ import mobile.solareye.dodidone.R;
 public class SwipeToDismissTouchListener<SomeCollectionView extends ViewAdapter> implements
         View.OnTouchListener {
 
+    // The elevation of the toolbar when content is scrolled behind
+    private static final float TOOLBAR_ELEVATION = 14f;
+    // To save/restore recyclerview state on configuration changes
+    private static final String STATE_RECYCLER_VIEW = "state-recycler-view";
+    private static final String STATE_VERTICAL_OFFSET = "state-vertical-offset";
+    private static final String STATE_SCROLLING_OFFSET = "state-scrolling-direction";
+    private static final String STATE_TOOLBAR_ELEVATION = "state-toolbar-elevation";
+    private static final String STATE_TOOLBAR_TRANSLATION_Y = "state-toolbar-translation-y";
+
+    // Keeps track of the overall vertical offset in the list
+    private int verticalOffset;
+    // Determines the scroll UP/DOWN offset
+    private int scrollingOffset;
+
     // Cached ViewConfiguration and system-wide constant values
     private int mSlop;
     private int mMinFlingVelocity;
@@ -143,6 +157,8 @@ public class SwipeToDismissTouchListener<SomeCollectionView extends ViewAdapter>
             @Override
             public void onScroll(AbsListView absListView, int i, int i1, int i2) {
             }
+
+
         });
     }
 

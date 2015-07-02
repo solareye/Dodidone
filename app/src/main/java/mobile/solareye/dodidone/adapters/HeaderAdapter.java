@@ -10,11 +10,11 @@ import android.widget.TextView;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import mobile.solareye.dodidone.R;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
+import mobile.solareye.dodidone.util.DateFormatHelper;
 
 /**
  * Created by Aleksander on 2/23/2015.
@@ -26,6 +26,11 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
     private static Cursor mCursor;
 
     public HeaderAdapter() {
+    }
+
+    @Override
+    public void onSetCursor(Cursor cursor) {
+        this.mCursor = cursor;
     }
 
     @Override
@@ -50,11 +55,6 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
         return convertHeaderId(position);
     }
 
-    @Override
-    public void onSetCursor(Cursor cursor) {
-        this.mCursor = cursor;
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title;
@@ -77,14 +77,7 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
             long headerId = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(headerId);
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-
-            return calendar.getTimeInMillis();
+            return DateFormatHelper.clearTimeOfDate(headerId);
         }
         return 0;
 

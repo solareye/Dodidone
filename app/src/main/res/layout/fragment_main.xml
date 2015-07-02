@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:alpha="0"
                 android:padding="34dp"
-                app:showOtherDates="false" />
+                app:mcv_showOtherDates="false" />
 
             <LinearLayout
                 android:layout_width="@dimen/partial_pane_width"
@@ -36,7 +36,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginTop="90dp"
                     android:src="@drawable/ic_calendar" />
             </LinearLayout>
         </FrameLayout>

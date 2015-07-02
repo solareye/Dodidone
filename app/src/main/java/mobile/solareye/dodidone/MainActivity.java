@@ -36,6 +36,13 @@ import com.hudomju.swipe.OnItemClickListener;
 import com.hudomju.swipe.SwipeableItemClickListener;
 import com.hudomju.swipe.adapter.RecyclerViewAdapter;
 import com.melnykov.fab.FloatingActionButton;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateChangedListener;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,6 +52,8 @@ import mobile.solareye.dodidone.customviews.SwipeToDismissTouchListener;
 import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
+import mobile.solareye.dodidone.util.CalendarDayDisableDecorator;
+import mobile.solareye.dodidone.util.DateFormatHelper;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -94,10 +103,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements OnHeaderClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+    public static class PlaceholderFragment extends Fragment implements OnHeaderClickListener, OnDateChangedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
         @Bind(R.id.toolbar)
         Toolbar toolbar;
+        @Bind(R.id.calendarView)
+        MaterialCalendarView calendarView;
 
         FloatingActionButton btnCreate;
 
@@ -109,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         private final static int SELECTED_EVENT_LOADER_ID = 1;
 
         private FragmentActivity mActivity;
+
+        private List<Long> days = new LinkedList<>();
 
         public PlaceholderFragment() {
         }
@@ -155,11 +168,6 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
 
             initToolbar();
-        }
-
-        void initToolbar() {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         @Override
@@ -214,6 +222,8 @@ public class MainActivity extends AppCompatActivity {
                                     //mAdapter.notifyItemRemoved(position);
                                 }
                             });
+
+            //mRecyclerView.co
 
             mRecyclerView.setOnTouchListener(touchListener);
             mRecyclerView.setOnScrollListener((RecyclerView.OnScrollListener) touchListener.makeScrollListener());
@@ -318,6 +328,9 @@ public class MainActivity extends AppCompatActivity {
                 case EVENTS_LOADER_ID:
                     ((SetingCursorListener) mAdapter).onSetCursor(cursor);
                     headerAdapter.onSetCursor(cursor);
+
+                    initCalendarView(cursor);
+
                     break;
 
                 case SELECTED_EVENT_LOADER_ID:
@@ -394,5 +407,68 @@ public class MainActivity extends AppCompatActivity {
             return new EventModel((int) id, name, dateStart, dateEnd, duration, reminder, details);
         }
 
+        void initToolbar() {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        void initCalendarView(Cursor cursor) {
+
+            calendarView.setOnDateChangedListener(this);
+
+            shapeDays(cursor);
+            // Add a decorator to disable prime numbered days
+            calendarView.addDecorator(new CalendarDayDisableDecorator(getDays()));
+
+        }
+
+        @Override
+        public void onDateChanged(MaterialCalendarView materialCalendarView, @Nullable CalendarDay calendarDay) {
+
+            mRecyclerView.scrollToPosition(0);
+        }
+
+        private void shapeDays(Cursor cursor) {
+
+            List<Long> days = new LinkedList<>();
+
+            while (cursor.moveToNext()) {
+
+                    long day = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+
+                    day = DateFormatHelper.clearTimeOfDate(day);
+
+                if(!days.contains(day))
+                    days.add(day);
+
+                if(cursor.isFirst())
+                    setMinDate(day);
+                if(cursor.isLast())
+                    setMaxDate(day);
+            }
+
+            setDays(days);
+
+        }
+
+        private void setMinDate(long day) {
+
+            Date date = new Date(day);
+
+            calendarView.setSelectedDate(date);
+            calendarView.setMinimumDate(date);
+        }
+
+        private void setMaxDate(long day) {
+            calendarView.setMaximumDate(new Date(day));
+        }
+
+        public List<Long> getDays() {
+            return days;
+        }
+
+        public void setDays(List<Long> days) {
+            this.days = days;
+        }
     }
 }

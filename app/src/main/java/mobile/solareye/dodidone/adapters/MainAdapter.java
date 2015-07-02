@@ -1,5 +1,6 @@
 package mobile.solareye.dodidone.adapters;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -18,7 +20,6 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import mobile.solareye.dodidone.R;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
@@ -26,7 +27,7 @@ import mobile.solareye.dodidone.listeners.SetingCursorListener;
 /**
  * Created by Aleksander on 2/21/2015.
  */
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements SetingCursorListener/*implements View.OnClickListener*/ {
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements SetingCursorListener {
 
     private Context mContext;
     FragmentManager fragmentManager;
@@ -37,7 +38,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
     private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR = new OvershootInterpolator(4);
     private static float endFloat;
 
-    // Provide a suitable constructor (depends on the kind of dataset)
     public MainAdapter(Context context, FragmentManager fragmentManager) {
         this.mContext = context;
         this.fragmentManager = fragmentManager;
@@ -53,11 +53,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         notifyDataSetChanged();
     }
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
+    public class ViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
+
+        private long id;
 
         @Bind(R.id.info_text)
         TextView mTextView;
@@ -74,21 +72,35 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         @Bind(R.id.toggle_sound)
         ToggleButton toggleSound;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, long id) {
             super(view);
+            this.id = id;
 
             ButterKnife.bind(this, view);
         }
 
-        @OnCheckedChanged(R.id.toggle_sound) public void click(boolean checked) {
+        public void setChecked(boolean checked) {
+
+            toggleSound.setOnCheckedChangeListener(null);
+
+            toggleSound.setChecked(checked);
+
+            toggleSound.setOnCheckedChangeListener(this);
+
+        }
+
+       /* @OnCheckedChanged(R.id.toggle_sound)
+        public void click(final boolean checked) {
+
+            if (!isEditToggleState())
+                return;
 
             AnimatorSet animatorSet = new AnimatorSet();
 
 
-            if(checked) {
+            if (checked) {
                 endFloat = -360f;
-            }
-            else {
+            } else {
                 endFloat = 360f;
             }
 
@@ -114,10 +126,87 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
             animatorSet.play(rotationAnim);
             animatorSet.play(bounceAnimX).with(bounceAnimY).after(rotationAnim);
 
+
+
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+
+                @Override
+                public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
+                    super.onAnimationEnd(animation);
+
+                    updateEventReminderNotify(checked);
+                }
+            });
+
             animatorSet.start();
+
+        }*/
+
+        void updateEventReminderNotify(boolean isNotify) {
+
+            ContentValues mNewValues = new ContentValues();
+
+            mNewValues.put(EventsContract.Events.EVENT_REMINDER_NOTIFY, isNotify ? 1 : 0);
+
+
+            int mNewUri = mContext.getContentResolver().update(
+                    EventsContract.Events.CONTENT_URI,
+                    mNewValues,
+                    EventsContract.Events._ID + " = ?",
+                    new String[] {String.valueOf(id)}
+            );
 
         }
 
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+
+            AnimatorSet animatorSet = new AnimatorSet();
+
+
+            if (isChecked) {
+                endFloat = -360f;
+            } else {
+                endFloat = 360f;
+            }
+
+            ObjectAnimator rotationAnim = ObjectAnimator.ofFloat(toggleSound, "rotation", 0f, endFloat);
+            rotationAnim.setDuration(300);
+            rotationAnim.setInterpolator(ACCELERATE_INTERPOLATOR);
+
+            ObjectAnimator bounceAnimX = ObjectAnimator.ofFloat(toggleSound, "scaleX", 0.2f, 1f);
+            bounceAnimX.setDuration(300);
+            bounceAnimX.setInterpolator(OVERSHOOT_INTERPOLATOR);
+
+            ObjectAnimator bounceAnimY = ObjectAnimator.ofFloat(toggleSound, "scaleY", 0.2f, 1f);
+            bounceAnimY.setDuration(300);
+            bounceAnimY.setInterpolator(OVERSHOOT_INTERPOLATOR);
+
+            bounceAnimY.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(com.nineoldandroids.animation.Animator animation) {
+                    super.onAnimationStart(animation);
+                }
+            });
+
+            animatorSet.play(rotationAnim);
+            animatorSet.play(bounceAnimX).with(bounceAnimY).after(rotationAnim);
+
+
+
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+
+                @Override
+                public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
+                    super.onAnimationEnd(animation);
+
+                    updateEventReminderNotify(isChecked);
+                }
+            });
+
+            animatorSet.start();
+
+        }
     }
 
     @Override
@@ -127,14 +216,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         if (freeTime != null && !freeTime.isEmpty())
             return CARD_TYPE_FREE_TIME;
         else*/
-            return CARD_TYPE_FULL;
+        return CARD_TYPE_FULL;
 
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+                                         int viewType) {
         View v = null;
 
         switch (viewType) {
@@ -147,7 +235,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
                         .inflate(R.layout.free_time, parent, false);
                 break;
         }
-        return new ViewHolder(v);
+        return new ViewHolder(v, -1);
     }
 
     @Override
@@ -159,82 +247,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         return -1;
     }
 
-    // boolean isActivated = false;
-
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
 
-        if(mCursor != null) {
+        if (mCursor != null) {
             mCursor.moveToPosition(position);
+
+            holder.id = getItemId(position);
+
             String eventName = mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_NAME));
-            if (eventName != null && !eventName.isEmpty()) {
+
+            boolean eventReminderNotify = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) == 0 ? false : true;
+
+            if (eventName != null && !eventName.isEmpty())
                 holder.mTextView.setText(eventName);
-
-
-                
-                /*holder.soundBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(final View soundBtn) {
-
-                        AnimatorSet animatorSet = new AnimatorSet();
-
-                        float endFloat;
-
-
-                        if(isActivated) {
-                            endFloat = -360f;
-                            isActivated = false;
-                        }
-                        else {
-                            endFloat = 360f;
-                            isActivated = true;
-                        }
-
-                        ObjectAnimator rotationAnim = ObjectAnimator.ofFloat(soundBtn, "rotation", 0f, endFloat);
-                        rotationAnim.setStartDelay(150);
-                        rotationAnim.setDuration(300);
-                        rotationAnim.setInterpolator(ACCELERATE_INTERPOLATOR);
-
-                        ObjectAnimator bounceAnimX = ObjectAnimator.ofFloat(soundBtn, "scaleX", 0.2f, 1f);
-                        bounceAnimX.setDuration(300);
-                        bounceAnimX.setInterpolator(OVERSHOOT_INTERPOLATOR);
-
-                        ObjectAnimator bounceAnimY = ObjectAnimator.ofFloat(soundBtn, "scaleY", 0.2f, 1f);
-                        bounceAnimY.setDuration(300);
-                        bounceAnimY.setInterpolator(OVERSHOOT_INTERPOLATOR);
-                        bounceAnimY.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                super.onAnimationStart(animation);
-                                if (isActivated) {
-                                    ((ImageView)soundBtn).setImageResource(R.drawable.tuba_active);
-                                    soundBtn.setAlpha(1f);
-                                } else {
-                                    ((ImageView)soundBtn).setImageResource(R.drawable.tuba_inactive);
-                                    soundBtn.setAlpha(0.7f);
-                                }
-                            }
-                        });
-
-                        bounceAnimY.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationStart(com.nineoldandroids.animation.Animator animation) {
-                                super.onAnimationStart(animation);
-                            }
-                        });
-
-                        animatorSet.play(rotationAnim);
-                        //if(isActivated)
-                        animatorSet.play(bounceAnimX).with(bounceAnimY).after(rotationAnim);
-
-                        animatorSet.start();
-                        
-                    }
-                });*/
-            }
+            if (eventReminderNotify)
+                holder.setChecked(true);//holder.toggleSound.setChecked(true);
+            else
+                holder.setChecked(false);//holder.toggleSound.setChecked(false);
 
             /*String freeTime = mDataset.get(position).getFreeTime();
             if (freeTime != null && !freeTime.isEmpty())
@@ -242,7 +272,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         if (mCursor == null) {

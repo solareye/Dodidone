@@ -124,6 +124,7 @@ public class SettingsActivity extends PreferenceActivity {
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
+
             String stringValue = value.toString();
 
             if (preference instanceof ListPreference) {
@@ -161,17 +162,11 @@ public class SettingsActivity extends PreferenceActivity {
                 }
 
             } else if (preference instanceof TimePreference) {
-                 if ("day_start_time".equals(preference.getKey())) {
 
-                     preference.setSummary(refactorTime(stringValue));
-
-                 } else if ("day_stop_time".equals(preference.getKey())) {
-
-                     preference.setSummary(refactorTime(stringValue));
-
-                 }
-            }
-                     else {
+                String summary = refactorTime(stringValue);
+                if (summary != null)
+                    preference.setSummary(summary);
+            } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
@@ -207,8 +202,11 @@ public class SettingsActivity extends PreferenceActivity {
 
         String[] pieces = oldTime.split(":");
 
+        if (pieces.length < 2)
+            return null;
+
         newTime = pieces[0];
-        if(pieces[1].length() == 1)
+        if (pieces[1].length() == 1)
             newTime += ":0" + pieces[1];
         else
             newTime += ":" + pieces[1];

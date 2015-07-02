@@ -27,6 +27,7 @@ public class EventsContract {
         public static final String EVENT_DATE_END = "date_end";
         public static final String EVENT_DURATION = "duration";
         public static final String EVENT_REMINDER = "reminder";
+        public static final String EVENT_REMINDER_NOTIFY = "reminder_notify";
         public static final String EVENT_DETAILS = "details";
     }
 
