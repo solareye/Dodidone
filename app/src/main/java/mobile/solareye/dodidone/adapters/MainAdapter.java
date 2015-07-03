@@ -262,9 +262,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
             if (eventName != null && !eventName.isEmpty())
                 holder.mTextView.setText(eventName);
             if (eventReminderNotify)
-                holder.setChecked(true);//holder.toggleSound.setChecked(true);
+                /*holder.setChecked(true);*/holder.toggleSound.setChecked(true);
             else
-                holder.setChecked(false);//holder.toggleSound.setChecked(false);
+                /*holder.setChecked(false);*/holder.toggleSound.setChecked(false);
 
             /*String freeTime = mDataset.get(position).getFreeTime();
             if (freeTime != null && !freeTime.isEmpty())

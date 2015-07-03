@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:colorControlHighlight">
+    <item>-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="false">
+
+        <set>
+            <objectAnimator android:duration="300" android:interpolator="@android:anim/overshoot_interpolator" android:propertyName="scaleX" android:startDelay="300" android:valueFrom="0.2" android:valueTo="1.0" android:valueType="floatType" />
+            <objectAnimator android:duration="300" android:interpolator="@android:anim/overshoot_interpolator" android:propertyName="scaleY" android:startDelay="300" android:valueFrom="0.2" android:valueTo="1.0" android:valueType="floatType" />
+            <objectAnimator android:duration="300" android:interpolator="@android:anim/accelerate_interpolator" android:propertyName="rotation" android:valueFrom="0" android:valueTo="-360" android:valueType="floatType" />
+        </set>
+
+    </item>
+    <item android:state_checked="true">
+
+        <set>
+            <objectAnimator android:duration="300" android:interpolator="@android:anim/overshoot_interpolator" android:propertyName="scaleX" android:startDelay="300" android:valueFrom="0.2" android:valueTo="1.0" android:valueType="floatType" />
+            <objectAnimator android:duration="300" android:interpolator="@android:anim/overshoot_interpolator" android:propertyName="scaleY" android:startDelay="300" android:valueFrom="0.2" android:valueTo="1.0" android:valueType="floatType" />
+            <objectAnimator android:duration="300" android:interpolator="@android:anim/accelerate_interpolator" android:propertyName="rotation" android:valueFrom="0" android:valueTo="360" android:valueType="floatType" />
+        </set>
+
+
+    </item>
+</selector><!--</item>
+
+</ripple>-->

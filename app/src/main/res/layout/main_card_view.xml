@@ -85,7 +85,8 @@
                 android:enabled="true"
                 android:gravity="center"
                 android:textOff=""
-                android:textOn="" />
+                android:textOn=""
+                android:stateListAnimator="@drawable/reminder_notify"/>
 
         </LinearLayout>
 
