@@ -89,59 +89,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
         }
 
-       /* @OnCheckedChanged(R.id.toggle_sound)
-        public void click(final boolean checked) {
-
-            if (!isEditToggleState())
-                return;
-
-            AnimatorSet animatorSet = new AnimatorSet();
-
-
-            if (checked) {
-                endFloat = -360f;
-            } else {
-                endFloat = 360f;
-            }
-
-            ObjectAnimator rotationAnim = ObjectAnimator.ofFloat(toggleSound, "rotation", 0f, endFloat);
-            rotationAnim.setDuration(300);
-            rotationAnim.setInterpolator(ACCELERATE_INTERPOLATOR);
-
-            ObjectAnimator bounceAnimX = ObjectAnimator.ofFloat(toggleSound, "scaleX", 0.2f, 1f);
-            bounceAnimX.setDuration(300);
-            bounceAnimX.setInterpolator(OVERSHOOT_INTERPOLATOR);
-
-            ObjectAnimator bounceAnimY = ObjectAnimator.ofFloat(toggleSound, "scaleY", 0.2f, 1f);
-            bounceAnimY.setDuration(300);
-            bounceAnimY.setInterpolator(OVERSHOOT_INTERPOLATOR);
-
-            bounceAnimY.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(com.nineoldandroids.animation.Animator animation) {
-                    super.onAnimationStart(animation);
-                }
-            });
-
-            animatorSet.play(rotationAnim);
-            animatorSet.play(bounceAnimX).with(bounceAnimY).after(rotationAnim);
-
-
-
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-
-                @Override
-                public void onAnimationEnd(com.nineoldandroids.animation.Animator animation) {
-                    super.onAnimationEnd(animation);
-
-                    updateEventReminderNotify(checked);
-                }
-            });
-
-            animatorSet.start();
-
-        }*/
-
         void updateEventReminderNotify(boolean isNotify) {
 
             ContentValues mNewValues = new ContentValues();

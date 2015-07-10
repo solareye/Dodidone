@@ -5,18 +5,18 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,19 +36,22 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.hudomju.swipe.OnItemClickListener;
 import com.hudomju.swipe.SwipeableItemClickListener;
 import com.hudomju.swipe.adapter.RecyclerViewAdapter;
-import com.melnykov.fab.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateChangedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import mobile.solareye.dodidone.adapters.HeaderAdapter;
 import mobile.solareye.dodidone.adapters.MainAdapter;
+import mobile.solareye.dodidone.customviews.ScrollAwareAppBarLayoutBehavior;
 import mobile.solareye.dodidone.customviews.SwipeToDismissTouchListener;
 import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
@@ -103,14 +107,19 @@ public class MainActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements OnHeaderClickListener, OnDateChangedListener, LoaderManager.LoaderCallbacks<Cursor> {
+    public static class PlaceholderFragment extends Fragment implements OnHeaderClickListener, OnDateChangedListener,
+            LoaderManager.LoaderCallbacks<Cursor>, OnMonthChangedListener {
 
         @Bind(R.id.toolbar)
         Toolbar toolbar;
         @Bind(R.id.calendarView)
         MaterialCalendarView calendarView;
-
-        FloatingActionButton btnCreate;
+        @Bind(R.id.appbar)
+        AppBarLayout appbar;
+        @Bind(R.id.main_content)
+        CoordinatorLayout main_content;
+        @Bind(R.id.monthBtn)
+        Button monthBtn;
 
         private static final String TAG = "PlaceholderFragment";
 
@@ -138,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View view = inflater.inflate(R.layout.fragment_main, container, false);
+            View view = inflater.inflate(R.layout.fragment_main_new, container, false);
 
             ButterKnife.bind(this, view);
 
@@ -150,12 +159,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onViewCreated");
             super.onViewCreated(rootView, savedInstanceState);
 
-            btnCreate = (FloatingActionButton) rootView.findViewById(R.id.fab);
-
-            btnCreate.setOnClickListener(fab_click);
-
-            final SlidingPaneLayout layout = (SlidingPaneLayout) rootView.findViewById(R.id.sliding_pane_layout);
-            layout.setSliderFadeColor(Color.TRANSPARENT);
+            /*final SlidingPaneLayout layout = (SlidingPaneLayout) rootView.findViewById(R.id.sliding_pane_layout);
+            layout.setSliderFadeColor(Color.TRANSPARENT);*/
 
 
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
@@ -167,7 +172,22 @@ public class MainActivity extends AppCompatActivity {
             // use a linear layout manager
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
 
-            initToolbar();
+            //initToolbar();
+
+            loadBackdrop();
+
+            calendarView.setTopbarVisible(false);
+            calendarView.setOnMonthChangedListener(this);
+        }
+
+        private final SimpleDateFormat simpleMonthFormat = new SimpleDateFormat("MMMM");
+
+        private void loadBackdrop() {
+
+            /*final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
+            Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);*/
+
+            monthBtn.setText(simpleMonthFormat.format(calendarView.getCurrentDate().getDate()));
         }
 
         @Override
@@ -200,7 +220,17 @@ public class MainActivity extends AppCompatActivity {
                                     if(freeTime != null && !freeTime.isEmpty())
                                         return false;
                                     else*/
-                                    return true;
+
+                                    /*int state = mRecyclerView.getScrollState();
+
+                                    if(state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
+                                        return false;
+
+                                    int axes = mRecyclerView.getNestedScrollAxes();
+
+                                    if (axes == View.SCROLL_AXIS_VERTICAL)
+                                        return false;
+                                    else*/ return true;
                                 }
 
                                 @Override
@@ -209,8 +239,6 @@ public class MainActivity extends AppCompatActivity {
                                     long id = mAdapter.getItemId(position);
 
                                     mActivity.getContentResolver().delete(EventsContract.Events.CONTENT_URI, EventsContract.Events._ID + " = ?", new String[] {String.valueOf(id)});
-
-                                    //mAdapter.remo
 
                                     //mAdapter.notifyItemRemoved(position);
 
@@ -222,8 +250,6 @@ public class MainActivity extends AppCompatActivity {
                                     //mAdapter.notifyItemRemoved(position);
                                 }
                             });
-
-            //mRecyclerView.co
 
             mRecyclerView.setOnTouchListener(touchListener);
             mRecyclerView.setOnScrollListener((RecyclerView.OnScrollListener) touchListener.makeScrollListener());
@@ -273,16 +299,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(mActivity, "Click on " + text.getText(), Toast.LENGTH_SHORT).show();
         }
 
-        View.OnClickListener fab_click = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int[] startingLocation = new int[2];
-                btnCreate.getLocationOnScreen(startingLocation);
-                startingLocation[0] += btnCreate.getWidth() / 2;
-                CreateActivity.startFromLocation(startingLocation, mActivity, v);
-                mActivity.overridePendingTransition(0, 0);
-            }
-        };
+        @OnClick(R.id.fab) void createNewEvent(View createBtn) {
+            int[] startingLocation = new int[2];
+            createBtn.getLocationOnScreen(startingLocation);
+            startingLocation[0] += createBtn.getWidth() / 2;
+            CreateActivity.startFromLocation(startingLocation, mActivity, createBtn);
+            mActivity.overridePendingTransition(0, 0);
+        }
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -470,5 +493,59 @@ public class MainActivity extends AppCompatActivity {
         public void setDays(List<Long> days) {
             this.days = days;
         }
+
+        @OnClick(R.id.monthBtn)
+        public void month_onClick() {
+
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+            ScrollAwareAppBarLayoutBehavior behavior = (ScrollAwareAppBarLayoutBehavior) params.getBehavior();
+            if (behavior != null) {
+
+                boolean isAnimOut = behavior.getmIsAnimatingOut();
+                float dy = isAnimOut ? 10000 : -10000;
+
+                behavior.onNestedFling(main_content, appbar, null, 0, dy, isAnimOut);
+
+                behavior.setIsScroll(!isAnimOut);
+
+                behavior.setmIsAnimatingOut(!isAnimOut);
+
+                behavior.setIsStop(false);
+            }
+
+        }
+
+        @Override
+        public void onMonthChanged(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
+            String month = simpleMonthFormat.format(calendarDay.getDate());
+            monthBtn.setText(month);
+        }
+
+        /*@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @OnClick(R.id.startJobBtn) void startJobService() {
+
+            sendBroadcast(true);
+
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @OnClick(R.id.stopJobBtn) void stopAllJobServices() {
+
+            sendBroadcast(false);
+
+        }
+
+        void sendBroadcast(boolean launch) {
+
+            final String BROADCAST_ACTION = mActivity.getString(R.string.notification_launch_receiver);
+
+            Intent intent = new Intent();
+            intent.setAction(BROADCAST_ACTION);
+            Bundle extras = new Bundle();
+            extras.putBoolean("launch", launch);
+            intent.putExtras(extras);
+            mActivity.sendBroadcast(intent);
+
+        }*/
     }
 }

@@ -1,181 +1,189 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="mobile.solareye.dodidone.CreateActivity">
 
-    <mobile.solareye.dodidone.customviews.RevealBackgroundView
-        android:id="@+id/vRevealBackground"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/view_toolbar" />
-
-    <TableLayout
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="?attr/actionBarSize">
-
-
-        <EditText
-            android:id="@+id/event_name_et"
+        <mobile.solareye.dodidone.customviews.RevealBackgroundView
+            android:id="@+id/vRevealBackground"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/event_name" />
+            android:layout_height="match_parent" />
 
-        <TableRow android:layout_margin="10dp">
+        <include layout="@layout/view_toolbar" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="All-day" />
+        <TableLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="74dp">
 
-            <Switch
-                android:id="@+id/all_day"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0" />
 
-        </TableRow>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/event_name_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <TableRow android:layout_margin="10dp">
+                <EditText
+                    android:id="@+id/event_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/event_name" />
+            </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:id="@+id/event_date_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/ripple_btn"
-                android:onClick="event_date_onClick"
-                android:padding="5dp"
-                android:text="2 may 2015" />
-
-            <TextView
-                android:id="@+id/event_time_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="0"
-                android:background="@drawable/ripple_btn"
-                android:onClick="event_time_onClick"
-                android:padding="5dp"
-                android:text="15:30" />
-
-        </TableRow>
-
-        <TableRow android:layout_margin="10dp">
-
-            <TextView
-                android:id="@+id/event_date_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/ripple_btn"
-                android:onClick="event_date_onClick"
-                android:padding="5dp"
-                android:text="2 may 2015" />
-
-            <TextView
-                android:id="@+id/event_time_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="0"
-                android:background="@drawable/ripple_btn"
-                android:onClick="event_time_onClick"
-                android:padding="5dp"
-                android:text="16:30" />
-
-        </TableRow>
-
-        <TableRow android:layout_margin="10dp">
-
-            <!--<TextView
-                android:id="@+id/event_repeat_till"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="event_repeat_till_onClick"
-                android:text="@string/event_repeat" />
-
-            -->
-
-            <Spinner
-                android:id="@+id/event_repeat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+            <TableRow android:layout_margin="10dp">
 
                 <TextView
-                    android:id="@+id/event_repeat_till"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="All-day" />
+
+                <Switch
+                    android:id="@+id/all_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0" />
+
+            </TableRow>
+
+            <TableRow android:layout_margin="10dp">
+
+                <TextView
+                    android:id="@+id/event_date_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_btn"
+                    android:onClick="event_date_onClick"
+                    android:padding="5dp"
+                    android:text="2 may 2015" />
+
+                <TextView
+                    android:id="@+id/event_time_start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:layout_weight="0"
                     android:background="@drawable/ripple_btn"
-                    android:onClick="event_repeat_till_onClick"
+                    android:onClick="event_time_onClick"
                     android:padding="5dp"
-                    android:text="@string/event_repeat_till" />
-            </FrameLayout>
+                    android:text="15:30" />
 
-        </TableRow>
+            </TableRow>
 
-        <EditText
-            android:id="@+id/event_comment_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/event_comment" />
+            <TableRow android:layout_margin="10dp">
 
-        <TextView
-            android:id="@+id/event_reminder_first"
+                <TextView
+                    android:id="@+id/event_date_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/ripple_btn"
+                    android:onClick="event_date_onClick"
+                    android:padding="5dp"
+                    android:text="2 may 2015" />
+
+                <TextView
+                    android:id="@+id/event_time_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="0"
+                    android:background="@drawable/ripple_btn"
+                    android:onClick="event_time_onClick"
+                    android:padding="5dp"
+                    android:text="16:30" />
+
+            </TableRow>
+
+            <TableRow android:layout_margin="10dp">
+
+                <!--<TextView
+                    android:id="@+id/event_repeat_till"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="event_repeat_till_onClick"
+                    android:text="@string/event_repeat" />
+
+                -->
+
+                <Spinner
+                    android:id="@+id/event_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/event_repeat_till"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:background="@drawable/ripple_btn"
+                        android:onClick="event_repeat_till_onClick"
+                        android:padding="5dp"
+                        android:text="@string/event_repeat_till" />
+                </FrameLayout>
+
+            </TableRow>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/event_comment_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/event_comment_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/event_comment" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/event_reminder_first"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/ripple_btn"
+                android:onClick="event_reminder_onClick"
+                android:padding="5dp"
+                android:text="за 30 минут" />
+
+            <TextView
+                android:id="@+id/event_reminder_second"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/ripple_btn"
+                android:onClick="event_reminder_onClick"
+                android:padding="5dp"
+                android:text="за 5 минут" />
+
+        </TableLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/ripple_btn"
-            android:onClick="event_reminder_onClick"
-            android:padding="5dp"
-            android:text="за 30 минут" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_action_close"
+            android:transitionName="@string/float_btn_transition" />
 
-        <TextView
-            android:id="@+id/event_reminder_second"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/ripple_btn"
-            android:onClick="event_reminder_onClick"
-            android:padding="5dp"
-            android:text="за 5 минут" />
+    </FrameLayout>
 
-
-    </TableLayout>
-
-
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/ic_action_close"
-        android:layout_margin="4dp"
-        android:tint="@color/abc_primary_text_disable_only_material_dark"
-        fab:fab_colorNormal="@color/actionbar_color"
-        fab:fab_colorPressed="@color/colorAccent"
-        fab:fab_colorRipple="@color/btn_ripple_pressed"
-        android:transitionName="@string/float_btn_transition"/>
-
-
-</FrameLayout>
+</ScrollView>

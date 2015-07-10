@@ -34,4 +34,10 @@
 
     <string name="float_btn_transition">float_btn_transition</string>
 
+    <string name="big_text">Android allows to put notification into the titlebar of your application. The user can expand the notification bar and by selecting the notification the user can trigger another activity.
+
+Because notifications can be very annoying, the user can disable notifications for each application. This can be done via the Settings application of the Android device. Select Apps in the Settings, select the app you are interested in and unset the Show notifications checkbox to prevent the app to show notifications.</string>
+
+    <string name="notification_launch_receiver">mobile.solareye.dodidone.launchnotificationreceiver</string>
+
 </resources>

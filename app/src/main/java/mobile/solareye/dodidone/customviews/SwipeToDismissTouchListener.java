@@ -156,6 +156,7 @@ public class SwipeToDismissTouchListener<SomeCollectionView extends ViewAdapter>
 
             @Override
             public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+                //if (mCallbacks.canDismiss(mDownPosition))
             }
 
 

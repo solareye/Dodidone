@@ -180,6 +180,8 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         if (RevealBackgroundView.STATE_FINISHED == state) {
             content.setVisibility(View.VISIBLE);
 
+            this.setTheme(R.style.AppTheme);
+
             initSpinner();
 
         } else {

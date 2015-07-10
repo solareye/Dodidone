@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?attr/actionBarSize"
     android:background="@color/actionbar_color"
     android:elevation="8dp"
-    android:minHeight="?attr/actionBarSize"
     android:transitionName="actionBar"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    app:layout_scrollFlags="scroll|enterAlways">
 
     <ImageView
         android:id="@+id/ivLogo"
@@ -17,6 +17,6 @@
         android:layout_gravity="left"
         android:scaleType="center"
         android:src="@mipmap/ic_launcher"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </android.support.v7.widget.Toolbar>
