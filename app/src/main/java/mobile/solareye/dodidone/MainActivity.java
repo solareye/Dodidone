@@ -33,15 +33,13 @@ import android.widget.Toast;
 
 import com.eowise.recyclerview.stickyheaders.OnHeaderClickListener;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
-import com.hudomju.swipe.OnItemClickListener;
-import com.hudomju.swipe.SwipeableItemClickListener;
-import com.hudomju.swipe.adapter.RecyclerViewAdapter;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateChangedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,10 +50,13 @@ import butterknife.OnClick;
 import mobile.solareye.dodidone.adapters.HeaderAdapter;
 import mobile.solareye.dodidone.adapters.MainAdapter;
 import mobile.solareye.dodidone.customviews.ScrollAwareAppBarLayoutBehavior;
-import mobile.solareye.dodidone.customviews.SwipeToDismissTouchListener;
 import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
+import mobile.solareye.dodidone.swipelib.OnItemClickListener;
+import mobile.solareye.dodidone.swipelib.RecyclerViewAdapter;
+import mobile.solareye.dodidone.swipelib.SwipeToDismissTouchListener;
+import mobile.solareye.dodidone.swipelib.SwipeableItemClickListener;
 import mobile.solareye.dodidone.util.CalendarDayDisableDecorator;
 import mobile.solareye.dodidone.util.DateFormatHelper;
 
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             // use a linear layout manager
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
 
-            //initToolbar();
+            initToolbar();
 
             loadBackdrop();
 
@@ -218,17 +219,6 @@ public class MainActivity extends AppCompatActivity {
                                 public boolean canDismiss(int position) {
                                     /*String freeTime = eventsDataProvider.getItems().get(position).getFreeTime();
                                     if(freeTime != null && !freeTime.isEmpty())
-                                        return false;
-                                    else*/
-
-                                    /*int state = mRecyclerView.getScrollState();
-
-                                    if(state == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
-                                        return false;
-
-                                    int axes = mRecyclerView.getNestedScrollAxes();
-
-                                    if (axes == View.SCROLL_AXIS_VERTICAL)
                                         return false;
                                     else*/ return true;
                                 }
@@ -464,8 +454,8 @@ public class MainActivity extends AppCompatActivity {
                 if(!days.contains(day))
                     days.add(day);
 
-                if(cursor.isFirst())
-                    setMinDate(day);
+                /*if(cursor.isFirst())
+                    setMinDate(day);*/
                 if(cursor.isLast())
                     setMaxDate(day);
             }
@@ -483,7 +473,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void setMaxDate(long day) {
-            calendarView.setMaximumDate(new Date(day));
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date(day));
+            cal.set(Calendar.DAY_OF_MONTH, 31);
+
+
+            calendarView.setMaximumDate(cal.getTime());
         }
 
         public List<Long> getDays() {

@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,7 +40,7 @@ import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
 
 
-public class CreateActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener {
+public class CreateActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener, Spinner.OnItemSelectedListener {
 
     private String TAG = "CreateActivity";
 
@@ -307,6 +309,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         adapterFirst.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinnerEventRepeat.setAdapter(adapterFirst);
 
+        spinnerEventRepeat.setOnItemSelectedListener(this);
     }
 
     private void save() {
@@ -367,5 +370,15 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     @OnClick(R.id.fab) public void close(View v) {
 
         this.supportFinishAfterTransition();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(this, "SUCCESs", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

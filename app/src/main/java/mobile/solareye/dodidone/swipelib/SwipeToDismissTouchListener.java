@@ -1,4 +1,4 @@
-package mobile.solareye.dodidone.customviews;
+package mobile.solareye.dodidone.swipelib;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.hudomju.swipe.adapter.ViewAdapter;
 
 import mobile.solareye.dodidone.R;
 
@@ -156,7 +154,7 @@ public class SwipeToDismissTouchListener<SomeCollectionView extends ViewAdapter>
 
             @Override
             public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-                //if (mCallbacks.canDismiss(mDownPosition))
+
             }
 
 

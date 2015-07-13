@@ -20,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginBottom="-48dp"
             app:expandedTitleMarginEnd="64dp"
@@ -52,7 +51,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <Button
@@ -72,19 +70,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_marginRight="34dp"
-        android:layout_marginTop="18dp"
         android:src="@drawable/ic_action_content_new"
         app:fabSize="mini"
         app:layout_anchor="@id/my_recycler_view"
-        app:layout_anchorGravity="right|end"/>
+        app:layout_anchorGravity="right|end"
+        />
 
 
 </android.support.design.widget.CoordinatorLayout>
