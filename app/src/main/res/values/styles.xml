@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
 
@@ -15,6 +15,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--<item name="android:navigationBarColor" tools:targetApi="21">@color/actionbar_color</item>-->
     </style>
 
     <style name="FullscreenTheme" parent="android:Theme.Light.NoTitleBar">

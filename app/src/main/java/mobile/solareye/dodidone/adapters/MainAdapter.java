@@ -3,6 +3,9 @@ package mobile.solareye.dodidone.adapters;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,12 +14,19 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.genyus.pacpie.chart.library.PieChart;
+import com.genyus.pacpie.chart.library.PieDetailsItem;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -71,6 +81,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
         @Bind(R.id.toggle_sound)
         ToggleButton toggleSound;
+
+        @Bind(R.id.pie)
+        ImageView pieIV;
 
         public ViewHolder(View view, long id) {
             super(view);
@@ -216,6 +229,37 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
             /*String freeTime = mDataset.get(position).getFreeTime();
             if (freeTime != null && !freeTime.isEmpty())
                 holder.freeTimeTV.setText(freeTime);*/
+
+
+
+            List<PieDetailsItem> piedata=new ArrayList<>();
+            int maxCount=0;
+            int itemCount=2;
+
+            //create a slice
+            PieDetailsItem item = new PieDetailsItem();
+            item.count = 1;
+            item.label = eventName;
+            item.color = Color.parseColor("#cecece");
+            piedata.add(item);
+
+            PieDetailsItem item2 = new PieDetailsItem();
+            item2.count = 2;
+            item2.label = eventName;
+            item2.color = Color.parseColor("#a0a0a0");
+            piedata.add(item2);
+
+            maxCount=2;
+
+            Bitmap mBaggroundImage=Bitmap.createBitmap(200,200,Bitmap.Config.ARGB_8888);
+            PieChart piechart=new PieChart(mContext);
+            piechart.setLayoutParams(new LinearLayout.LayoutParams(200, 200));
+            piechart.setGeometry(200, 200, 2, 2, 2, 2, 2130837504);
+            piechart.setSkinparams(mContext.getResources().getColor(android.R.color.transparent));
+            piechart.setData(piedata, maxCount);
+            piechart.invalidate();
+            piechart.draw(new Canvas(mBaggroundImage));
+            holder.pieIV.setImageBitmap(mBaggroundImage);
         }
     }
 

@@ -28,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eowise.recyclerview.stickyheaders.OnHeaderClickListener;
@@ -285,8 +284,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onHeaderClick(View header, long headerId) {
 
-            TextView text = (TextView) header.findViewById(R.id.section_text);
-            Toast.makeText(mActivity, "Click on " + text.getText(), Toast.LENGTH_SHORT).show();
+            //TextView text = (TextView) header.findViewById(R.id.section_text);
+            Toast.makeText(mActivity, "Click on headerId " + headerId, Toast.LENGTH_SHORT).show();
         }
 
         @OnClick(R.id.fab) void createNewEvent(View createBtn) {
@@ -454,8 +453,8 @@ public class MainActivity extends AppCompatActivity {
                 if(!days.contains(day))
                     days.add(day);
 
-                /*if(cursor.isFirst())
-                    setMinDate(day);*/
+                if(cursor.isFirst())
+                    setMinDate(day);
                 if(cursor.isLast())
                     setMaxDate(day);
             }
@@ -466,10 +465,15 @@ public class MainActivity extends AppCompatActivity {
 
         private void setMinDate(long day) {
 
-            Date date = new Date(day);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date(day));
 
-            calendarView.setSelectedDate(date);
-            calendarView.setMinimumDate(date);
+
+            calendarView.setSelectedDate(cal.getTime());
+
+            cal.set(Calendar.DAY_OF_MONTH, 1);
+
+            calendarView.setMinimumDate(cal.getTime());
         }
 
         private void setMaxDate(long day) {

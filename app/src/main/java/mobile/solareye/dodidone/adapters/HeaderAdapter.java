@@ -10,7 +10,11 @@ import android.widget.TextView;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import mobile.solareye.dodidone.R;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
@@ -21,8 +25,11 @@ import mobile.solareye.dodidone.util.DateFormatHelper;
  */
 public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHolder>, SetingCursorListener {
 
-    static SimpleDateFormat dateFormatWithoutYear = new SimpleDateFormat(
-            "cccc d MMMM");
+    private static SimpleDateFormat dateFormatWeekDay = new SimpleDateFormat(
+            "cccc");
+    private static SimpleDateFormat dateFormatMonthDay = new SimpleDateFormat(
+            "d");
+
     private static Cursor mCursor;
 
     public HeaderAdapter() {
@@ -45,7 +52,12 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
         if (mCursor != null) {
             mCursor.moveToPosition(position);
-            headerViewHolder.title.setText(convertDate(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START))));
+
+            String[] dayConv = convertDate(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START)));
+
+
+            headerViewHolder.month_day.setText(dayConv[0]);
+            headerViewHolder.week_day.setText(dayConv[1]);
         }
     }
 
@@ -57,17 +69,28 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title;
+        @Bind(R.id.week_day)
+        TextView week_day;
+        @Bind(R.id.month_day)
+        TextView month_day;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            title = (TextView) itemView.findViewById(R.id.section_text);
+            ButterKnife.bind(this, itemView);
         }
     }
 
-    private String convertDate(long date_start) {
-        return dateFormatWithoutYear.format(date_start);
+    private String[] convertDate(long date_start) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date_start);
+
+        String dayOfMonth = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        String day = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+
+
+        return new String[] {dayOfMonth, day};
     }
 
     private long convertHeaderId(int position) {

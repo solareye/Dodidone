@@ -4,25 +4,47 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/section_text"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
-        android:gravity="left|center_vertical"
-        android:paddingBottom="5dp"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="5dp"
-        android:text=""
-        android:textAppearance="?android:textAppearanceLarge"
-        android:textColor="@color/header_bgnd" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/month_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:colorBackground"
+            android:gravity="left|center_vertical"
+            android:paddingBottom="5dp"
+            android:paddingStart="33dp"
+            android:paddingTop="5dp"
+            android:text="6"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/header_bgnd" />
+
+        <TextView
+            android:id="@+id/week_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:colorBackground"
+            android:gravity="left|center_vertical"
+            android:paddingBottom="5dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="50dp"
+            android:paddingTop="5dp"
+            android:text="may"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/header_bgnd" />
+
+
+    </LinearLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
-        android:src="?android:listDivider" />
+        android:src="?android:listDivider"
+        android:layout_gravity="bottom"/>
 </LinearLayout>
 
     <!--<?xml version="1.0" encoding="utf-8"?>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
@@ -53,10 +54,21 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    android:src="@mipmap/ic_launcher"
+                    android:layout_marginRight="24dp"
+                    android:layout_marginEnd="24dp"/>
+
                 <Button
                     android:id="@+id/monthBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_btn"
+                    android:textSize="32sp"
                     android:text="month" />
 
             </android.support.v7.widget.Toolbar>
@@ -76,12 +88,11 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="34dp"
+        android:layout_marginLeft="58dp"
         android:src="@drawable/ic_action_content_new"
         app:fabSize="mini"
         app:layout_anchor="@id/my_recycler_view"
-        app:layout_anchorGravity="right|end"
-        />
+        app:layout_anchorGravity="left|start" />
 
 
 </android.support.design.widget.CoordinatorLayout>
