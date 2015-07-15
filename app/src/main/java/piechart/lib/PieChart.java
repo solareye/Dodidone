@@ -19,14 +19,14 @@ public class PieChart extends View {
 	public static final int WAIT = 0;
 	public static final int IS_READY_TO_DRAW = 1;
 	public static final int IS_DRAW = 2;
-	private static final float START_INC = -90;
+	private static final float START_INC = 180;
 
 	private Paint bagPaints = new Paint();
 	private Paint linePaints = new Paint();
 
 	private int lineStrokeColor = 0x88FFFFFF;
 	private int bagStrokeColor = 0x88FF0000;
-	private float lineStrokeWidth = 3.0f;
+	private float lineStrokeWidth = 1.0f;
 	private float bagStrokeWidth = 0.0f;
 	private boolean antiAlias = true;
 
@@ -62,6 +62,7 @@ public class PieChart extends View {
 		bagPaints.setAntiAlias(antiAlias);
 		bagPaints.setStyle(Paint.Style.FILL);
 		bagPaints.setColor(bagStrokeColor);
+
 		bagPaints.setStrokeWidth(bagStrokeWidth);
 		linePaints.setAntiAlias(antiAlias);
 		linePaints.setColor(lineStrokeColor);
@@ -74,6 +75,7 @@ public class PieChart extends View {
 		for (int i = 0; i < pieDetailsList.size(); i++) {
 			item = pieDetailsList.get(i);
 			bagPaints.setColor(item.color);
+			bagPaints.setAlpha(125);
 			sweep = (float) 360 * ((float) item.count / (float) maxConnection);
 			canvas.drawArc(mOvals, start, sweep, true, bagPaints);
 			canvas.drawArc(mOvals, start, sweep, true, linePaints);

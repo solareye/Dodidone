@@ -1,4 +1,4 @@
-package mobile.solareye.dodidone.customviews;
+package mobile.solareye.dodidone.behaviors;
 
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;

@@ -18,8 +18,11 @@
 
             <ImageView
                 android:id="@+id/pie"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_margin="5dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/dial_back"
+                android:scaleType="centerCrop"/>
 
             <mobile.solareye.dodidone.customviews.DialView
                 android:layout_width="100dp"
@@ -34,12 +37,14 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="10:00\n12:20"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:visibility="gone"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#494949" />
+                android:background="#494949"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/duration_time_text"
@@ -49,12 +54,14 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="2 часа\n20 минут"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:visibility="gone"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#494949" />
+                android:background="#494949"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/info_text"
@@ -64,15 +71,15 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:maxLines="2"
                 android:padding="5dp"
                 android:text="vvv"
-                android:textSize="22sp" />
+                android:textSize="22sp"/>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#494949" />
+                android:background="#494949"
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/btn_sound"

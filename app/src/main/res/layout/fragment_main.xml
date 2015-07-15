@@ -85,7 +85,7 @@
                 android:layout_marginRight="34dp"
                 android:layout_marginTop="18dp"
                 android:src="@drawable/ic_action_content_new"
-                app:fabSize="mini" />
+                app:fabSize="normal" />
 
         </RelativeLayout>
     </mobile.solareye.dodidone.customviews.CrossFadeSlidingPaneLayout>

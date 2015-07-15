@@ -25,6 +25,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,11 +49,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
     private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR = new OvershootInterpolator(4);
     private static float endFloat;
 
+    private String new_line = "\r\n";
+    Random RANDOM = new Random();
+
     public MainAdapter(Context context, FragmentManager fragmentManager) {
         this.mContext = context;
         this.fragmentManager = fragmentManager;
 
         setHasStableIds(true);
+
     }
 
     private static Cursor mCursor;
@@ -216,6 +221,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
             String eventName = mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_NAME));
 
+            /*String ff = "";
+
+            int j = RANDOM.nextInt(7);
+
+            for (int i = 0; i < j; i++)
+                ff += new_line;
+
+            eventName += ff;*/
+
             boolean eventReminderNotify = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) == 0 ? false : true;
 
             if (eventName != null && !eventName.isEmpty())
@@ -238,7 +252,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
             PieDetailsItem item = new PieDetailsItem();
             item.count = 120;
             item.label = eventName;
-            item.color = Color.parseColor("#f0cecece");
+            item.color = Color.parseColor("#B2DFDB");
             piedata.add(item);
 
             /*PieDetailsItem item2 = new PieDetailsItem();
@@ -249,10 +263,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
             maxCount = 720;
 
-            Bitmap mBaggroundImage = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
+            Bitmap mBaggroundImage = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
             PieChart piechart = new PieChart(mContext);
-            piechart.setLayoutParams(new LinearLayout.LayoutParams(200, 200));
-            piechart.setGeometry(200, 200, 2, 2, 2, 2, holder.pieIV.getId());
+            piechart.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
+            piechart.setGeometry(100, 100, 2, 2, 2, 2, holder.pieIV.getId());
             piechart.setSkinparams(mContext.getResources().getColor(android.R.color.transparent));
             piechart.setData(piedata, maxCount);
             piechart.invalidate();

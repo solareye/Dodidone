@@ -18,7 +18,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -48,7 +48,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import mobile.solareye.dodidone.adapters.HeaderAdapter;
 import mobile.solareye.dodidone.adapters.MainAdapter;
-import mobile.solareye.dodidone.customviews.ScrollAwareAppBarLayoutBehavior;
+import mobile.solareye.dodidone.behaviors.ScrollAwareAppBarLayoutBehavior;
 import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
@@ -170,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setHasFixedSize(true);
 
             // use a linear layout manager
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
+
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)/*new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false)*/);
 
             initToolbar();
 
