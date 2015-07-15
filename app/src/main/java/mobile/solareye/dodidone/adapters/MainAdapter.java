@@ -19,8 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.genyus.pacpie.chart.library.PieChart;
-import com.genyus.pacpie.chart.library.PieDetailsItem;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -33,6 +31,8 @@ import butterknife.ButterKnife;
 import mobile.solareye.dodidone.R;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
+import piechart.lib.PieChart;
+import piechart.lib.PieDetailsItem;
 
 /**
  * Created by Aleksander on 2/21/2015.
@@ -113,7 +113,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
                     EventsContract.Events.CONTENT_URI,
                     mNewValues,
                     EventsContract.Events._ID + " = ?",
-                    new String[] {String.valueOf(id)}
+                    new String[]{String.valueOf(id)}
             );
 
         }
@@ -151,7 +151,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
             animatorSet.play(rotationAnim);
             animatorSet.play(bounceAnimX).with(bounceAnimY).after(rotationAnim);
-
 
 
             animatorSet.addListener(new AnimatorListenerAdapter() {
@@ -222,7 +221,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
             if (eventName != null && !eventName.isEmpty())
                 holder.mTextView.setText(eventName);
             if (eventReminderNotify)
-                /*holder.setChecked(true);*/holder.toggleSound.setChecked(true);
+                /*holder.setChecked(true);*/ holder.toggleSound.setChecked(true);
             else
                 /*holder.setChecked(false);*/holder.toggleSound.setChecked(false);
 
@@ -231,30 +230,29 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
                 holder.freeTimeTV.setText(freeTime);*/
 
 
-
-            List<PieDetailsItem> piedata=new ArrayList<>();
-            int maxCount=0;
-            int itemCount=2;
+            List<PieDetailsItem> piedata = new ArrayList<>();
+            int maxCount = 0;
+            int itemCount = 2;
 
             //create a slice
             PieDetailsItem item = new PieDetailsItem();
-            item.count = 1;
+            item.count = 120;
             item.label = eventName;
-            item.color = Color.parseColor("#cecece");
+            item.color = Color.parseColor("#f0cecece");
             piedata.add(item);
 
-            PieDetailsItem item2 = new PieDetailsItem();
-            item2.count = 2;
+            /*PieDetailsItem item2 = new PieDetailsItem();
+            item2.count = 100;
             item2.label = eventName;
             item2.color = Color.parseColor("#a0a0a0");
-            piedata.add(item2);
+            piedata.add(item2);*/
 
-            maxCount=2;
+            maxCount = 720;
 
-            Bitmap mBaggroundImage=Bitmap.createBitmap(200,200,Bitmap.Config.ARGB_8888);
-            PieChart piechart=new PieChart(mContext);
+            Bitmap mBaggroundImage = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
+            PieChart piechart = new PieChart(mContext);
             piechart.setLayoutParams(new LinearLayout.LayoutParams(200, 200));
-            piechart.setGeometry(200, 200, 2, 2, 2, 2, 2130837504);
+            piechart.setGeometry(200, 200, 2, 2, 2, 2, holder.pieIV.getId());
             piechart.setSkinparams(mContext.getResources().getColor(android.R.color.transparent));
             piechart.setData(piedata, maxCount);
             piechart.invalidate();
