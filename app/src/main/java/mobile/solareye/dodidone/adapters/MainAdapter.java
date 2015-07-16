@@ -221,14 +221,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
             String eventName = mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_NAME));
 
-            /*String ff = "";
+            String ff = "";
 
             int j = RANDOM.nextInt(7);
 
             for (int i = 0; i < j; i++)
                 ff += new_line;
 
-            eventName += ff;*/
+            eventName += ff;
 
             boolean eventReminderNotify = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) == 0 ? false : true;
 

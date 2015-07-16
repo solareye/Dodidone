@@ -48,8 +48,6 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     private SimpleDateFormat sdf = new SimpleDateFormat("E, MMM d, yyyy");
     private boolean pendingIntroAnimation;
 
-    private MenuItem inboxMenuItem;
-
     private EventModel eventModel;
     private Calendar calStart, calStop;
 
@@ -140,8 +138,6 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_create, menu);
-        inboxMenuItem = menu.findItem(R.id.action_save);
-        //inboxMenuItem.setActionView(R.layout.actionview_menu);
 
         if (pendingIntroAnimation) {
             pendingIntroAnimation = false;
@@ -181,8 +177,6 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     public void onStateChange(int state) {
         if (RevealBackgroundView.STATE_FINISHED == state) {
             content.setVisibility(View.VISIBLE);
-
-            this.setTheme(R.style.AppTheme);
 
             initSpinner();
 
@@ -270,8 +264,6 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
         toolbar.setTranslationY(-actionbarSize);
         ivLogo.setTranslationY(-actionbarSize);
-        View actionView = inboxMenuItem.getActionView();
-        actionView.setTranslationY(-actionbarSize);
 
         toolbar.animate()
                 .translationY(0)
@@ -280,17 +272,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         ivLogo.animate()
                 .translationY(0)
                 .setDuration(ANIM_DURATION_TOOLBAR)
-                .setStartDelay(400);
-        inboxMenuItem.getActionView().animate()
-                .translationY(0)
-                .setDuration(ANIM_DURATION_TOOLBAR)
-                .setStartDelay(500)
-                .setListener(new android.animation.AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(android.animation.Animator animation) {
-                        super.onAnimationEnd(animation);
-                    }
-                })
+                .setStartDelay(400)
                 .start();
     }
 

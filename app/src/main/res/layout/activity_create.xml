@@ -1,21 +1,19 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mobile.solareye.dodidone.CreateActivity"
-    android:background="@android:color/background_light">
+    tools:context="mobile.solareye.dodidone.CreateActivity">
 
+    <mobile.solareye.dodidone.customviews.RevealBackgroundView
+        android:id="@+id/vRevealBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <FrameLayout
+    <include layout="@layout/view_toolbar" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <mobile.solareye.dodidone.customviews.RevealBackgroundView
-            android:id="@+id/vRevealBackground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <include layout="@layout/view_toolbar" />
 
         <TableLayout
             android:id="@+id/content"
@@ -175,17 +173,16 @@
                 android:text="за 5 минут" />
 
         </TableLayout>
+    </ScrollView>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_margin="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:src="@drawable/ic_action_close"
-            android:transitionName="@string/float_btn_transition" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="4dp"
+        android:src="@drawable/ic_action_close"
+        android:transitionName="@string/float_btn_transition" />
 
-    </FrameLayout>
-
-</ScrollView>
+</FrameLayout>
