@@ -6,8 +6,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +30,6 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,10 +37,13 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import mobile.solareye.dodidone.customviews.RevealBackgroundView;
 import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
+import mobile.solareye.dodidone.util.DateFormatHelper;
 
 
 public class CreateActivity extends AppCompatActivity implements RevealBackgroundView.OnStateChangeListener, Spinner.OnItemSelectedListener {
@@ -49,12 +55,11 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     private boolean pendingIntroAnimation;
 
     private EventModel eventModel;
-    private Calendar calStart, calStop;
+    private Calendar calStart, calStop, calRepeatUntil;
 
     @Bind(R.id.vRevealBackground)
     RevealBackgroundView vRevealBackground;
-    /*@Bind(R.id.textviewcreate)
-    View textviewcreate;*/
+
     @Bind(R.id.event_time_start)
     TextView event_time_start;
     @Bind(R.id.event_time_stop)
@@ -65,7 +70,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     TextView event_date_stop;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind (R.id.content)
+    @Bind(R.id.content)
     TableLayout content;
     @Bind(R.id.ivLogo)
     ImageView ivLogo;
@@ -77,6 +82,9 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     EditText eventNameET;
     @Bind(R.id.event_comment_et)
     EditText eventCommentET;
+    @Bind(R.id.event_reminder_first)
+    TextView event_reminder_first;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +101,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         setupRevealBackground(savedInstanceState);
 
         initData();
+
     }
 
     private void initToolbar() {
@@ -107,6 +116,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
         calStart = Calendar.getInstance();
         calStop = Calendar.getInstance();
+        calRepeatUntil = Calendar.getInstance();
         calStop.add(Calendar.HOUR_OF_DAY, 1);
 
         event_date_start.setText(sdf.format(calStart.getTime()));
@@ -157,7 +167,8 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
                 return true;
 
-            default: return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
     }
@@ -186,7 +197,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     }
 
     public void event_date_onClick(View v) {
-        createDatePickerDialog((TextView)v);
+        createDatePickerDialog((TextView) v);
     }
 
     public void event_time_onClick(View v) {
@@ -194,11 +205,11 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     }
 
     public void event_repeat_till_onClick(View v) {
-
+        createDatePickerDialog((TextView) v);
     }
 
     public void event_reminder_onClick(View v) {
-        createReminderDialog((TextView)v);
+        createReminderDialog((TextView) v);
     }
 
     private void createTimePickerDialog(final TextView view) {
@@ -230,20 +241,76 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                //Calendar cal = Calendar.getInstance();
+
                 cal.set(year, monthOfYear, dayOfMonth);
-                view.setText(sdf.format(new Date(cal.getTimeInMillis())));
+
+                String repeatUntilText = view.getId() == R.id.event_repeat_till ? getResources().getString(R.string.event_repeat_till) + "\r\n" : "";
+
+                view.setText(repeatUntilText + sdf.format(new Date(cal.getTimeInMillis())));
             }
         }, year, monthOfYear, dayOfMonth);
+
+        if(view.getId() == R.id.event_repeat_till) {
+
+            calRepeatUntil.setTimeInMillis(calStart.getTimeInMillis());
+
+            switch (eventModel.getRepeat()) {
+
+                case 1: calRepeatUntil.add(Calendar.DAY_OF_YEAR, 1);
+                    break;
+                case 2: calRepeatUntil.add(Calendar.WEEK_OF_MONTH, 1);
+                    break;
+                case 3: calRepeatUntil.add(Calendar.MONTH, 1);
+                    break;
+                case 4: calRepeatUntil.add(Calendar.YEAR, 1);
+                    break;
+                default: break;
+
+            }
+
+            long minDate = calRepeatUntil.getTimeInMillis();
+
+            DatePicker datePicker = dpd.getDatePicker();
+
+            datePicker.setMinDate(minDate);
+        }
+
         dpd.show();
     }
 
-    private void createReminderDialog(final TextView view){
+    private void createReminderDialog(final TextView view) {
+
+
+        int checkedItem;
+        try {
+            checkedItem = view.getTag() == null ? 1 : (int) view.getTag();
+        } catch(Exception ex) {
+            checkedItem = view.getTag() == null ? 1 : Integer.parseInt((String)view.getTag());
+        }
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setSingleChoiceItems(R.array.reminders, 1, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(R.array.reminders, checkedItem, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 //Toast.makeText(CreateActivity.this, "which = " + which, Toast.LENGTH_SHORT).show();
-                view.setText("which = " + which);
+                view.setTag(which);
+                view.setText(getResources().getStringArray(R.array.reminders)[which]);
+
+
+                if (view.getId() == R.id.event_reminder_first) {
+
+                    long event_reminder_first_value = getResources().getIntArray(R.array.reminder_values)[which];
+                    eventModel.setReminderFirst(event_reminder_first_value);
+
+                    if (event_reminder_first_value > 0)
+                        eventModel.setReminderNotify(true);
+                    else
+                        eventModel.setReminderNotify(false);
+                } else
+                    eventModel.setReminderSecond(getResources().getIntArray(R.array.reminder_values)[which]);
+
+                dialog.cancel();
+
             }
         });
         builder.create().show();
@@ -256,8 +323,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         int actionbarSize = 0;
 
         TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             actionbarSize = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
 
@@ -284,7 +350,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         String dayName = dayNameFormat.format(new Date());
         String date = dateFormat.format(new Date());
 
-        String[] dataFirst = new String[] {"нет повторения", "каждый день", "every " + dayName, "каждое " + date + " число", "каждый год"};
+        String[] dataFirst = new String[]{"нет повторения", "каждый день", "every " + dayName, "каждое " + date + " число", "каждый год"};
 
         ArrayAdapter<String> adapterFirst = new ArrayAdapter<>(toolbar.getContext(),
                 R.layout.support_simple_spinner_dropdown_item, dataFirst);
@@ -295,27 +361,40 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     }
 
     private void save() {
-        
-        ContentValues mNewValues = new ContentValues();
-
-        mNewValues.put(EventsContract.Events.EVENT_NAME, getName());
-        mNewValues.put(EventsContract.Events.EVENT_DATE_START, getDateStart());
-        mNewValues.put(EventsContract.Events.EVENT_DATE_END, getDateStop());
-        mNewValues.put(EventsContract.Events.EVENT_DURATION, getDuration());
-        /*mNewValues.put(EventsContract.Events.EVENT_REMINDER, null);*/
-        mNewValues.put(EventsContract.Events.EVENT_DETAILS, getDetails());
-
-        /*
 
         Uri mNewUri = getContentResolver().insert(
-                EventsContract.Events.CONTENT_URI,   // the user dictionary content URI
-                mNewValues                          // the values to insert
+                EventsContract.Events.CONTENT_URI,
+                getContentValues()
         );
 
         if (mNewUri != null)
             finish();
 
-        */
+    }
+
+    private ContentValues getContentValues() {
+
+        ContentValues mNewValues = new ContentValues();
+
+        mNewValues.put(EventsContract.Events.EVENT_NAME, getName());
+        mNewValues.put(EventsContract.Events.EVENT_DATE_START, getDateStart());
+
+        if (!eventModel.isAllDay()) {
+            mNewValues.put(EventsContract.Events.EVENT_DATE_END, getDateStop());
+            mNewValues.put(EventsContract.Events.EVENT_DURATION, getDuration());
+        }
+
+        mNewValues.put(EventsContract.Events.EVENT_REMINDER_FIRST, eventModel.getReminderFirst());
+        mNewValues.put(EventsContract.Events.EVENT_REMINDER_SECOND, eventModel.getReminderSecond());
+        mNewValues.put(EventsContract.Events.EVENT_REMINDER_NOTIFY, eventModel.isReminderNotify());
+        mNewValues.put(EventsContract.Events.EVENT_DETAILS, getDetails());
+
+        mNewValues.put(EventsContract.Events.EVENT_ALL_DAY, eventModel.isAllDay());
+        mNewValues.put(EventsContract.Events.EVENT_REPEAT, eventModel.getRepeat());
+        mNewValues.put(EventsContract.Events.EVENT_REPEAT_UNTIL, eventModel.getRepeatUntil());
+
+        return mNewValues;
+
     }
 
     private String getName() {
@@ -329,7 +408,10 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
         Log.d(TAG, "Date Start = " + sdf2.format(new Date(calStart.getTimeInMillis())));
 
-        return calStart.getTimeInMillis();
+        if(eventModel.isAllDay())
+            return DateFormatHelper.clearTimeOfDate(calStart.getTimeInMillis());
+        else
+            return calStart.getTimeInMillis();
     }
 
     private long getDateStop() {
@@ -349,18 +431,43 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         return eventCommentET.getText().toString();
     }
 
-    @OnClick(R.id.fab) public void close(View v) {
+    @OnClick(R.id.fab)
+    public void close(View v) {
 
         this.supportFinishAfterTransition();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(this, "SUCCESs", Toast.LENGTH_SHORT).show();
+
+        eventModel.setRepeat(position);
+
+        eventRepeatTill.setVisibility(position == 0 ? TextView.GONE : TextView.VISIBLE);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @OnCheckedChanged(R.id.all_day)
+    void allDaySwitch(CompoundButton buttonView, final boolean isChecked) {
+
+        event_date_stop.setEnabled(!isChecked);
+        event_time_start.setEnabled(!isChecked);
+        event_time_stop.setEnabled(!isChecked);
+
+        eventModel.setAllDay(isChecked);
+
+    }
+
+    @OnFocusChange(R.id.event_name_et) void onFoc(View v, boolean hasFocus) {
+
+        if(!hasFocus) {
+
+            InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+        }
     }
 }

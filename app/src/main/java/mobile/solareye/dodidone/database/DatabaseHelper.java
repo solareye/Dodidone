@@ -1,13 +1,10 @@
 package mobile.solareye.dodidone.database;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
-import mobile.solareye.dodidone.data.EventsDataProvider;
 
 /**
  * Created by Aleksander on 2/21/2015.
@@ -35,14 +32,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + EventsContract.Events.EVENT_NAME + " TEXT NOT NULL, "
                 + EventsContract.Events.EVENT_DATE_START + " INTEGER, "
                 + EventsContract.Events.EVENT_DATE_END + " INTEGER, "
+                + EventsContract.Events.EVENT_ALL_DAY + " INTEGER, "
                 + EventsContract.Events.EVENT_DURATION + " INTEGER, "
-                + EventsContract.Events.EVENT_REMINDER + " INTEGER, "
+                + EventsContract.Events.EVENT_REMINDER_FIRST + " INTEGER, "
+                + EventsContract.Events.EVENT_REMINDER_SECOND + " INTEGER, "
                 + EventsContract.Events.EVENT_REMINDER_NOTIFY + " INTEGER, "
+                + EventsContract.Events.EVENT_REPEAT + " INTEGER, "
+                + EventsContract.Events.EVENT_REPEAT_UNTIL + " INTEGER, "
                 + EventsContract.Events.EVENT_DETAILS + " TEXT);";
 
         db.execSQL(CREATE_EVENTS_TABLE);
 
-        for (EventModel event : EventsDataProvider.events) {
+        /*for (EventModel event : EventsDataProvider.events) {
 
             if (event.getName() == null)
                 continue;
@@ -56,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put(EventsContract.Events.EVENT_DETAILS, event.getDetails());
 
             db.insert(TABLE_EVENTS, null, contentValues);
-        }
+        }*/
 
     }
     @Override

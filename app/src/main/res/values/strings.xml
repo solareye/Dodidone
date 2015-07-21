@@ -16,13 +16,7 @@
     <string name="achieve">Выполнено</string>
     <string name="delete">Удалить</string>
 
-    <string-array name="reminders">
-        <item>No notification</item>
-        <item>за 5 минут</item>
-        <item>за 30 минут</item>
-        <item>за 1 час</item>
-        <item>за 1 день</item>
-    </string-array>
+
 
     <string name="permission_label">Доступ к списку задач Dodidone</string>
     <string name="permission_description">Возможность получить разрешение на чтение к списку задач Dodidone</string>

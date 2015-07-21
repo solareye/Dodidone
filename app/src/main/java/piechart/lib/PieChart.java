@@ -19,7 +19,6 @@ public class PieChart extends View {
 	public static final int WAIT = 0;
 	public static final int IS_READY_TO_DRAW = 1;
 	public static final int IS_DRAW = 2;
-	private static final float START_INC = 180;
 
 	private Paint bagPaints = new Paint();
 	private Paint linePaints = new Paint();
@@ -30,6 +29,7 @@ public class PieChart extends View {
 	private float bagStrokeWidth = 0.0f;
 	private boolean antiAlias = true;
 
+	private float startInc;
 	private int width;
 	private int height;
 	private int gapTop;
@@ -52,6 +52,10 @@ public class PieChart extends View {
 		super(context, attr);
 	}
 
+	public void setStartInc(float startInc) {
+		this.startInc = startInc;
+	}
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -70,7 +74,7 @@ public class PieChart extends View {
 		linePaints.setStyle(Paint.Style.STROKE);
 		RectF mOvals = new RectF(gapLeft, gapTop, width - gapRight, height
 				- gapBottm);
-		start = START_INC;
+		start = startInc;
 		PieDetailsItem item;
 		for (int i = 0; i < pieDetailsList.size(); i++) {
 			item = pieDetailsList.get(i);
@@ -79,6 +83,17 @@ public class PieChart extends View {
 			sweep = (float) 360 * ((float) item.count / (float) maxConnection);
 			canvas.drawArc(mOvals, start, sweep, true, bagPaints);
 			canvas.drawArc(mOvals, start, sweep, true, linePaints);
+
+
+			/*Paint paintPoint = new Paint();
+			paintPoint.setColor(item.color);
+			paintPoint.setStyle(Paint.Style.FILL);
+			paintPoint.setStrokeWidth(10);
+
+			canvas.drawPoint(0, 0, paintPoint);
+			canvas.drawPoint(10, 10, paintPoint);*/
+
+
 			start = start + sweep;
 		}
 

@@ -24,6 +24,7 @@ import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -221,14 +222,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
             String eventName = mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_NAME));
 
-            String ff = "";
+            /*String ff = "";
 
             int j = RANDOM.nextInt(7);
 
             for (int i = 0; i < j; i++)
                 ff += new_line;
 
-            eventName += ff;
+            eventName += ff;*/
 
             boolean eventReminderNotify = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) == 0 ? false : true;
 
@@ -244,34 +245,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
                 holder.freeTimeTV.setText(freeTime);*/
 
 
-            List<PieDetailsItem> piedata = new ArrayList<>();
-            int maxCount = 0;
-            int itemCount = 2;
 
-            //create a slice
-            PieDetailsItem item = new PieDetailsItem();
-            item.count = 120;
-            item.label = eventName;
-            item.color = Color.parseColor("#B2DFDB");
-            piedata.add(item);
-
-            /*PieDetailsItem item2 = new PieDetailsItem();
-            item2.count = 100;
-            item2.label = eventName;
-            item2.color = Color.parseColor("#a0a0a0");
-            piedata.add(item2);*/
-
-            maxCount = 720;
-
-            Bitmap mBaggroundImage = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-            PieChart piechart = new PieChart(mContext);
-            piechart.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
-            piechart.setGeometry(100, 100, 2, 2, 2, 2, holder.pieIV.getId());
-            piechart.setSkinparams(mContext.getResources().getColor(android.R.color.transparent));
-            piechart.setData(piedata, maxCount);
-            piechart.invalidate();
-            piechart.draw(new Canvas(mBaggroundImage));
-            holder.pieIV.setImageBitmap(mBaggroundImage);
+            holder.pieIV.setImageBitmap(pieChartImage());
         }
     }
 
@@ -282,5 +257,56 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
         } else {
             return mCursor.getCount();
         }
+    }
+
+    private Bitmap pieChartImage() {
+
+        long dateStart = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateStart);
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        int minutes = calendar.get(Calendar.MINUTE);
+
+        int startPoint = (hours * 60 + minutes) / 2 - 90;
+
+        long dateEnd = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END));
+        calendar.setTimeInMillis(dateEnd);
+        hours = calendar.get(Calendar.HOUR_OF_DAY);
+        minutes = calendar.get(Calendar.MINUTE);
+        int stopPoint = (hours * 60 + minutes) / 2 - 90;
+
+
+        List<PieDetailsItem> piedata = new ArrayList<>();
+        int maxCount = 0;
+        int itemCount = 2;
+
+        //create a slice
+        PieDetailsItem item = new PieDetailsItem();
+        item.count = stopPoint - startPoint;
+        //item.label = eventName;
+        item.color = Color.parseColor("#B2DFDB");
+        piedata.add(item);
+
+            /*PieDetailsItem item2 = new PieDetailsItem();
+            item2.count = 100;
+            item2.label = eventName;
+            item2.color = Color.parseColor("#a0a0a0");
+            piedata.add(item2);*/
+
+        maxCount = 360;
+
+        Bitmap mBaggroundImage = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        PieChart piechart = new PieChart(mContext);
+        piechart.setStartInc(startPoint);
+        piechart.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
+        piechart.setGeometry(100, 100, 2, 2, 2, 2, 0);
+        piechart.setSkinparams(mContext.getResources().getColor(android.R.color.transparent));
+        piechart.setData(piedata, maxCount);
+        piechart.invalidate();
+        piechart.draw(new Canvas(mBaggroundImage));
+
+        return mBaggroundImage;
     }
 }

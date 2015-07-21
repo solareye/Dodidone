@@ -35,7 +35,13 @@
                     android:id="@+id/event_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/event_name" />
+                    android:capitalize="sentences"
+                    android:hint="@string/event_name">
+
+                    <requestFocus />
+                </EditText>
+
+
             </android.support.design.widget.TextInputLayout>
 
             <TableRow android:layout_margin="10dp">
@@ -79,7 +85,9 @@
 
             </TableRow>
 
-            <TableRow android:layout_margin="10dp">
+            <TableRow
+                android:id="@+id/time_row"
+                android:layout_margin="10dp">
 
                 <TextView
                     android:id="@+id/event_date_stop"
@@ -120,7 +128,8 @@
                     android:id="@+id/event_repeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0" />
+                    android:layout_weight="0"
+                    android:spinnerMode="dropdown" />
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -135,7 +144,9 @@
                         android:background="@drawable/ripple_btn"
                         android:onClick="event_repeat_till_onClick"
                         android:padding="5dp"
-                        android:text="@string/event_repeat_till" />
+                        android:hint="@string/event_repeat_till"
+                        android:visibility="gone"
+                        />
                 </FrameLayout>
 
             </TableRow>
@@ -149,6 +160,7 @@
                     android:id="@+id/event_comment_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:capitalize="sentences"
                     android:hint="@string/event_comment" />
             </android.support.design.widget.TextInputLayout>
 
@@ -160,7 +172,8 @@
                 android:background="@drawable/ripple_btn"
                 android:onClick="event_reminder_onClick"
                 android:padding="5dp"
-                android:text="за 30 минут" />
+                android:tag="3"
+                android:text="за 1 час" />
 
             <TextView
                 android:id="@+id/event_reminder_second"
@@ -170,7 +183,9 @@
                 android:background="@drawable/ripple_btn"
                 android:onClick="event_reminder_onClick"
                 android:padding="5dp"
+                android:tag="1"
                 android:text="за 5 минут" />
+
 
         </TableLayout>
     </ScrollView>
