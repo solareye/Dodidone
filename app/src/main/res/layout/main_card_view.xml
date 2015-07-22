@@ -19,8 +19,8 @@
             <ImageView
                 android:id="@+id/pie"
                 android:layout_margin="5dp"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:background="@drawable/dial_back"
                 android:scaleType="centerCrop"/>
 

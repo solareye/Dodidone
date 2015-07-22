@@ -28,7 +28,7 @@ public class EventModel implements Serializable {
         this.reminderNotify = true;
     }
 
-    public EventModel(EventModel eventModel) {
+    /*public EventModel(EventModel eventModel) {
         this._id = eventModel.get_id();
         this.name = eventModel.getName();
         this.dateStart = eventModel.getDateStart();
@@ -36,15 +36,27 @@ public class EventModel implements Serializable {
         this.duration = eventModel.getDuration();
         this.reminderFirst = eventModel.getReminderFirst();
         this.details = eventModel.getDetails();
-    }
+    }*/
 
-    public EventModel(int _id, String name, long dateStart, long dateEnd, long duration, long reminder, String details) {
+    public EventModel(int _id, String name, long dateStart, long dateEnd, long duration, long reminderFirst,
+                      long reminderSecond, boolean reminderNotify, String details, boolean allDay, int repeat, long repeatUntil) {
         this._id = _id;
         this.name = name;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
         this.duration = duration;
-        this.reminderFirst = reminder;
+        this.reminderFirst = reminderFirst;
+        this.reminderSecond = reminderSecond;
+        this.reminderNotify = reminderNotify;
+        this.details = details;
+        this.allDay = allDay;
+        this.repeat = repeat;
+        this.repeatUntil = repeatUntil;
+    }
+
+    public EventModel(int _id, String name, String details) {
+        this._id = _id;
+        this.name = name;
         this.details = details;
     }
 

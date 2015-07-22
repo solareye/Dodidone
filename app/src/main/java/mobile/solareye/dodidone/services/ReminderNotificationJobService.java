@@ -24,7 +24,9 @@ public class ReminderNotificationJobService extends JobService {
 
         Log.i(LOG, "Starting Job");
 
-        NotificationHelper.createNotification(this);
+        String contentUri = params.getExtras().getString("content_uri");
+
+        NotificationHelper.createNotification(this, contentUri);
 
         Log.i(LOG, "Job Started");
 

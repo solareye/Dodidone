@@ -19,4 +19,17 @@ public class DateFormatHelper {
         return calendar.getTimeInMillis();
     }
 
+    public static String correctingTime (int hourOfDay, int minute) {
+
+        String time;
+
+        String hourString = String.valueOf(hourOfDay);
+        String minuteString = String.valueOf(minute);
+
+        time = (hourString.length() > 1 ? hourString : "0" + hourString) + ":" + (minuteString.length() > 1 ? minuteString : "0" + minuteString);
+
+        return time;
+
+    }
+
 }

@@ -27,7 +27,6 @@
 
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/event_name_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -36,12 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:capitalize="sentences"
-                    android:hint="@string/event_name">
-
-                    <requestFocus />
-                </EditText>
-
-
+                    android:hint="@string/event_name" />
             </android.support.design.widget.TextInputLayout>
 
             <TableRow android:layout_margin="10dp">
@@ -90,7 +84,7 @@
                 android:layout_margin="10dp">
 
                 <TextView
-                    android:id="@+id/event_date_stop"
+                    android:id="@+id/event_date_end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -100,7 +94,7 @@
                     android:text="2 may 2015" />
 
                 <TextView
-                    android:id="@+id/event_time_stop"
+                    android:id="@+id/event_time_end"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -152,7 +146,6 @@
             </TableRow>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/event_comment_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

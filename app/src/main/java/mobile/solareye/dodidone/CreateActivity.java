@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
@@ -30,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,7 +38,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
 import mobile.solareye.dodidone.customviews.RevealBackgroundView;
 import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
@@ -55,19 +53,19 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     private boolean pendingIntroAnimation;
 
     private EventModel eventModel;
-    private Calendar calStart, calStop, calRepeatUntil;
+    private Calendar calStart, calEnd, calRepeatUntil;
 
     @Bind(R.id.vRevealBackground)
     RevealBackgroundView vRevealBackground;
 
     @Bind(R.id.event_time_start)
     TextView event_time_start;
-    @Bind(R.id.event_time_stop)
-    TextView event_time_stop;
+    @Bind(R.id.event_time_end)
+    TextView event_time_end;
     @Bind(R.id.event_date_start)
     TextView event_date_start;
-    @Bind(R.id.event_date_stop)
-    TextView event_date_stop;
+    @Bind(R.id.event_date_end)
+    TextView event_date_end;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content)
@@ -115,15 +113,17 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         eventModel = new EventModel();
 
         calStart = Calendar.getInstance();
-        calStop = Calendar.getInstance();
+        calEnd = Calendar.getInstance();
         calRepeatUntil = Calendar.getInstance();
-        calStop.add(Calendar.HOUR_OF_DAY, 1);
+
+        calStart.add(Calendar.HOUR_OF_DAY, 1);
+        calEnd.add(Calendar.HOUR_OF_DAY, 2);
 
         event_date_start.setText(sdf.format(calStart.getTime()));
-        event_date_stop.setText(sdf.format(calStop.getTime()));
+        event_date_end.setText(sdf.format(calEnd.getTime()));
 
-        event_time_start.setText(calStart.get(Calendar.HOUR_OF_DAY) + ":" + calStart.get(Calendar.MINUTE));
-        event_time_stop.setText(calStop.get(Calendar.HOUR_OF_DAY) + ":" + calStart.get(Calendar.MINUTE));
+        event_time_start.setText(DateFormatHelper.correctingTime(calStart.get(Calendar.HOUR_OF_DAY), calStart.get(Calendar.MINUTE)));
+        event_time_end.setText(DateFormatHelper.correctingTime(calEnd.get(Calendar.HOUR_OF_DAY), calEnd.get(Calendar.MINUTE)));
     }
 
     private void setupRevealBackground(Bundle savedInstanceState) {
@@ -191,6 +191,8 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
             initSpinner();
 
+            //eventNameET.requestFocus();
+
         } else {
             content.setVisibility(View.INVISIBLE);
         }
@@ -214,7 +216,10 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
     private void createTimePickerDialog(final TextView view) {
 
-        final Calendar cal = view.getId() == R.id.event_time_start ? calStart : calStop;
+        final Calendar cal = view.getId() == R.id.event_time_start ? calStart : calEnd;
+
+        //final int oldTimeGrowth = view.getId() == R.id.event_time_start ? 60 : 120;
+
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
 
@@ -222,18 +227,36 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
             public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
 
-                cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                cal.set(Calendar.MINUTE, minute);
+                int currentTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) * 60 + Calendar.getInstance().get(Calendar.MINUTE);//+ oldTimeGrowth;
+                int startTime = calStart.get(Calendar.HOUR_OF_DAY) * 60 + calStart.get(Calendar.MINUTE);
+                int newTime = hourOfDay * 60 + minute;
 
-                view.setText(hourOfDay + ":" + minute);
+                if (newTime < currentTime || (cal == calEnd && newTime < startTime)) {
+                    Toast.makeText(CreateActivity.this, R.string.given_incorrect_time, Toast.LENGTH_SHORT).show();
+                } else {
+
+                    if(cal == calStart) {
+                        calEnd.set(Calendar.HOUR_OF_DAY, hourOfDay + 1);
+                        calEnd.set(Calendar.MINUTE, minute);
+
+                        event_time_end.setText(DateFormatHelper.correctingTime(hourOfDay + 1, minute));
+                    }
+
+                    cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    cal.set(Calendar.MINUTE, minute);
+
+                    view.setText(DateFormatHelper.correctingTime(hourOfDay, minute));
+                }
+
             }
         }, hour, minute, true);
+
         tpd.show();
     }
 
     private void createDatePickerDialog(final TextView view) {
 
-        final Calendar cal = view.getId() == R.id.event_date_start ? calStart : calStop;
+        final Calendar cal = view.getId() == R.id.event_date_start ? calStart : calEnd;
         int year = cal.get(Calendar.YEAR);
         int monthOfYear = cal.get(Calendar.MONTH);
         int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
@@ -250,25 +273,44 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
             }
         }, year, monthOfYear, dayOfMonth);
 
-        if(view.getId() == R.id.event_repeat_till) {
+        if (view.getId() == R.id.event_repeat_till) {
 
             calRepeatUntil.setTimeInMillis(calStart.getTimeInMillis());
 
             switch (eventModel.getRepeat()) {
 
-                case 1: calRepeatUntil.add(Calendar.DAY_OF_YEAR, 1);
+                case 1:
+                    calRepeatUntil.add(Calendar.DAY_OF_YEAR, 1);
                     break;
-                case 2: calRepeatUntil.add(Calendar.WEEK_OF_MONTH, 1);
+                case 2:
+                    calRepeatUntil.add(Calendar.WEEK_OF_MONTH, 1);
                     break;
-                case 3: calRepeatUntil.add(Calendar.MONTH, 1);
+                case 3:
+                    calRepeatUntil.add(Calendar.MONTH, 1);
                     break;
-                case 4: calRepeatUntil.add(Calendar.YEAR, 1);
+                case 4:
+                    calRepeatUntil.add(Calendar.YEAR, 1);
                     break;
-                default: break;
+                default:
+                    break;
 
             }
 
             long minDate = calRepeatUntil.getTimeInMillis();
+
+            DatePicker datePicker = dpd.getDatePicker();
+
+            datePicker.setMinDate(minDate);
+        } else if (view.getId() == R.id.event_date_start) {
+
+            long minDate = Calendar.getInstance().getTimeInMillis();
+
+            DatePicker datePicker = dpd.getDatePicker();
+
+            datePicker.setMinDate(minDate);
+        } else if (view.getId() == R.id.event_date_end) {
+
+            long minDate = calStart.getTimeInMillis();
 
             DatePicker datePicker = dpd.getDatePicker();
 
@@ -284,8 +326,8 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
         int checkedItem;
         try {
             checkedItem = view.getTag() == null ? 1 : (int) view.getTag();
-        } catch(Exception ex) {
-            checkedItem = view.getTag() == null ? 1 : Integer.parseInt((String)view.getTag());
+        } catch (Exception ex) {
+            checkedItem = view.getTag() == null ? 1 : Integer.parseInt((String) view.getTag());
         }
 
 
@@ -362,13 +404,29 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
     private void save() {
 
-        Uri mNewUri = getContentResolver().insert(
-                EventsContract.Events.CONTENT_URI,
-                getContentValues()
-        );
+        if(eventNameET.getText().length() > 0) {
 
-        if (mNewUri != null)
-            finish();
+            Uri mNewUri = getContentResolver().insert(
+                    EventsContract.Events.CONTENT_URI,
+                    getContentValues()
+            );
+
+            if (mNewUri != null) {
+
+                final String BROADCAST_ACTION = getString(R.string.notification_launch_receiver);
+
+                Intent intent = new Intent();
+                intent.setAction(BROADCAST_ACTION);
+                Bundle extras = new Bundle();
+                extras.putBoolean("launch", true);
+                extras.putString("content_uri", mNewUri.toString());
+                intent.putExtras(extras);
+                sendBroadcast(intent);
+
+                finish();
+            }
+        } else
+            Toast.makeText(this, R.string.empty_event_name_field_error, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -408,7 +466,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
         Log.d(TAG, "Date Start = " + sdf2.format(new Date(calStart.getTimeInMillis())));
 
-        if(eventModel.isAllDay())
+        if (eventModel.isAllDay())
             return DateFormatHelper.clearTimeOfDate(calStart.getTimeInMillis());
         else
             return calStart.getTimeInMillis();
@@ -416,9 +474,9 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
 
     private long getDateStop() {
 
-        Log.d(TAG, "Date Stop = " + sdf2.format(new Date(calStop.getTimeInMillis())));
+        Log.d(TAG, "Date Stop = " + sdf2.format(new Date(calEnd.getTimeInMillis())));
 
-        return calStop.getTimeInMillis();
+        return calEnd.getTimeInMillis();
     }
 
     private long getDuration() {
@@ -453,15 +511,15 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     @OnCheckedChanged(R.id.all_day)
     void allDaySwitch(CompoundButton buttonView, final boolean isChecked) {
 
-        event_date_stop.setEnabled(!isChecked);
+        event_date_end.setEnabled(!isChecked);
         event_time_start.setEnabled(!isChecked);
-        event_time_stop.setEnabled(!isChecked);
+        event_time_end.setEnabled(!isChecked);
 
         eventModel.setAllDay(isChecked);
 
     }
 
-    @OnFocusChange(R.id.event_name_et) void onFoc(View v, boolean hasFocus) {
+    /*@OnFocusChange(R.id.event_name_et) void onFoc(View v, boolean hasFocus) {
 
         if(!hasFocus) {
 
@@ -469,5 +527,5 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
         }
-    }
+    }*/
 }

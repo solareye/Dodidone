@@ -245,7 +245,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
                 holder.freeTimeTV.setText(freeTime);*/
 
 
-
             holder.pieIV.setImageBitmap(pieChartImage());
         }
     }
@@ -261,47 +260,64 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
     private Bitmap pieChartImage() {
 
+        boolean isAllDay = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_ALL_DAY)) > 0;
+
         long dateStart = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
 
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(dateStart);
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        int minutes = calendar.get(Calendar.MINUTE);
-
-        int startPoint = (hours * 60 + minutes) / 2 - 90;
-
-        long dateEnd = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END));
-        calendar.setTimeInMillis(dateEnd);
-        hours = calendar.get(Calendar.HOUR_OF_DAY);
-        minutes = calendar.get(Calendar.MINUTE);
-        int stopPoint = (hours * 60 + minutes) / 2 - 90;
+        long startPoint = -90;
 
 
         List<PieDetailsItem> piedata = new ArrayList<>();
-        int maxCount = 0;
+        final int maxCount = 360;
         int itemCount = 2;
 
         //create a slice
         PieDetailsItem item = new PieDetailsItem();
-        item.count = stopPoint - startPoint;
+
+        if (isAllDay)
+            item.count = 360;
+        else {
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateStart);
+            int hours = calendar.get(Calendar.HOUR_OF_DAY);
+            int minutes = calendar.get(Calendar.MINUTE);
+
+            //startPoint = (hours * 60 + minutes) / 2 - 90;
+
+            startPoint = (int) (calendar.getTimeInMillis() / (1000 * 60)) / 2;
+
+            long dateEnd = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END));
+            calendar.setTimeInMillis(dateEnd);
+            hours = calendar.get(Calendar.HOUR_OF_DAY);
+            minutes = calendar.get(Calendar.MINUTE);
+            long stopPoint = (calendar.getTimeInMillis() / (1000 * 60)) / 2; //(hours * 60 + minutes) / 2 - 90;
+
+            item.count = (int) (stopPoint - startPoint);
+
+            if (item.count > maxCount) {
+
+                item.count = item.count - 360;
+
+                PieDetailsItem item2 = new PieDetailsItem();
+                item2.count = 360;
+                item2.color = Color.parseColor("#B2DFDB");
+                piedata.add(item2);
+            }
+        }
+
+
         //item.label = eventName;
         item.color = Color.parseColor("#B2DFDB");
         piedata.add(item);
 
-            /*PieDetailsItem item2 = new PieDetailsItem();
-            item2.count = 100;
-            item2.label = eventName;
-            item2.color = Color.parseColor("#a0a0a0");
-            piedata.add(item2);*/
 
-        maxCount = 360;
-
-        Bitmap mBaggroundImage = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Bitmap mBaggroundImage = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
         PieChart piechart = new PieChart(mContext);
         piechart.setStartInc(startPoint);
-        piechart.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
-        piechart.setGeometry(100, 100, 2, 2, 2, 2, 0);
+        piechart.setLayoutParams(new LinearLayout.LayoutParams(80, 80));
+        piechart.setGeometry(80, 80, 2, 2, 2, 2, 0);
         piechart.setSkinparams(mContext.getResources().getColor(android.R.color.transparent));
         piechart.setData(piedata, maxCount);
         piechart.invalidate();

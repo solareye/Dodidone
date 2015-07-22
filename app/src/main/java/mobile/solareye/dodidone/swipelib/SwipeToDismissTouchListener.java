@@ -104,7 +104,7 @@ public class SwipeToDismissTouchListener<SomeCollectionView extends ViewAdapter>
          */
         void onDelete(SomeCollectionView recyclerView, int position);
 
-        void onAchieve(SomeCollectionView recyclerView, int position);
+        void onArchive(SomeCollectionView recyclerView, int position);
     }
 
     /**
@@ -394,7 +394,7 @@ public class SwipeToDismissTouchListener<SomeCollectionView extends ViewAdapter>
         dismissView.undoContainer.setVisibility(View.VISIBLE);
 
         if (isAchieving)
-            dismissView.doTextView.setText(R.string.achieve);
+            dismissView.doTextView.setText(R.string.archive);
         else
             dismissView.doTextView.setText(R.string.delete);
 
@@ -455,7 +455,7 @@ public class SwipeToDismissTouchListener<SomeCollectionView extends ViewAdapter>
             public void onAnimationEnd(Animator animation) {
                 if (mCallbacks.canDismiss(pendingDismissData.position)) {
                     if (isAchieving)
-                        mCallbacks.onAchieve(mRecyclerView, pendingDismissData.position);
+                        mCallbacks.onArchive(mRecyclerView, pendingDismissData.position);
                     else
                         mCallbacks.onDelete(mRecyclerView, pendingDismissData.position);
                 }

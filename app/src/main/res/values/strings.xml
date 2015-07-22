@@ -13,7 +13,7 @@
     <string name="event_repeat_till">Повторять до:</string>
     <string name="event_comment">Комментарии</string>
 
-    <string name="achieve">Выполнено</string>
+    <string name="archive">Выполнено</string>
     <string name="delete">Удалить</string>
 
 
@@ -33,5 +33,8 @@
 Because notifications can be very annoying, the user can disable notifications for each application. This can be done via the Settings application of the Android device. Select Apps in the Settings, select the app you are interested in and unset the Show notifications checkbox to prevent the app to show notifications.</string>
 
     <string name="notification_launch_receiver">mobile.solareye.dodidone.launchnotificationreceiver</string>
+
+    <string name="given_incorrect_time">Given incorrect time</string>
+    <string name="empty_event_name_field_error">Event name field can not be empty</string>
 
 </resources>

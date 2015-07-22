@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onAchieve(RecyclerViewAdapter recyclerView, int position) {
+                                public void onArchive(RecyclerViewAdapter recyclerView, int position) {
                                     //eventsDataProvider.getItems().remove(position);
                                     //mAdapter.notifyItemRemoved(position);
                                 }
@@ -362,6 +362,8 @@ public class MainActivity extends AppCompatActivity {
 
                         handler.sendMessage(message);
 
+                        //NotificationHelper.createNotification(getActivity(), "content://mobile.solareye.dodidone.provider/events/" + id);
+
                     } else {
                         //resetCityEditingForm();
                     }
@@ -413,10 +415,16 @@ public class MainActivity extends AppCompatActivity {
             long dateStart = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
             long dateEnd = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END));
             long duration = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DURATION));
-            long reminder = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_FIRST));
+            long reminderFirst = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_FIRST));
+            long reminderSecond = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_SECOND));
             String details = cursor.getString(cursor.getColumnIndex(EventsContract.Events.EVENT_DETAILS));
 
-            return new EventModel((int) id, name, dateStart, dateEnd, duration, reminder, details);
+            boolean reminderNotify = cursor.getInt(cursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) > 0;
+            boolean allDay = cursor.getInt(cursor.getColumnIndex(EventsContract.Events.EVENT_ALL_DAY)) > 0;
+            int repeat = cursor.getInt(cursor.getColumnIndex(EventsContract.Events.EVENT_REPEAT));
+            long repeatUntil = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_REPEAT_UNTIL));
+
+            return new EventModel((int) id, name, dateStart, dateEnd, duration, reminderFirst, reminderSecond, reminderNotify, details, allDay, repeat, repeatUntil);
         }
 
         void initToolbar() {

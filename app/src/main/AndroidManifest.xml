@@ -42,8 +42,7 @@
         <activity
             android:name=".CreateActivity"
             android:label="@string/title_activity_create"
-            android:theme="@style/AppTheme.TransparentActivity"
-            android:windowSoftInputMode="stateAlwaysVisible"/>
+            android:theme="@style/AppTheme.TransparentActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
