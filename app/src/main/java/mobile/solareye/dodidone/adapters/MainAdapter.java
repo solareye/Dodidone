@@ -2,7 +2,6 @@ package mobile.solareye.dodidone.adapters;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,11 +25,9 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import mobile.solareye.dodidone.R;
+import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.data.EventsContract;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
 import piechart.lib.PieChart;
@@ -50,8 +47,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
     private static final OvershootInterpolator OVERSHOOT_INTERPOLATOR = new OvershootInterpolator(4);
     private static float endFloat;
 
-    private String new_line = "\r\n";
-    Random RANDOM = new Random();
+    List<EventModel> events = new ArrayList<>();
 
     public MainAdapter(Context context, FragmentManager fragmentManager) {
         this.mContext = context;
@@ -61,11 +57,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
     }
 
-    private static Cursor mCursor;
+    //private static Cursor mCursor;
 
     @Override
-    public void onSetCursor(Cursor cursor) {
-        this.mCursor = cursor;
+    public void onSetCursor(List<EventModel> dataSet) {
+        //this.mCursor = cursor;
+
+        events = dataSet;
+
         notifyDataSetChanged();
     }
 
@@ -73,29 +72,34 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
         private long id;
 
-        @Bind(R.id.info_text)
+        //@Bind(R.id.info_text)
         TextView mTextView;
 
         /*@Bind(R.id.card_view)
         CardView cardView;
 
-        @Bind(R.id.free_time_tv)
-        TextView freeTimeTV;
-
         @Bind(R.id.btn_sound)
         ImageButton soundBtn;*/
 
-        @Bind(R.id.toggle_sound)
+        //@Bind(R.id.free_time_tv)
+        TextView freeTimeTV;
+
+        //@Bind(R.id.toggle_sound)
         ToggleButton toggleSound;
 
-        @Bind(R.id.pie)
+        //@Bind(R.id.pie)
         ImageView pieIV;
 
-        public ViewHolder(View view, long id) {
+        public ViewHolder(View view) {
             super(view);
-            this.id = id;
 
-            ButterKnife.bind(this, view);
+            //ButterKnife.bind(this, view);
+
+            mTextView = (TextView) view.findViewById(R.id.info_text);
+            freeTimeTV = (TextView) view.findViewById(R.id.free_time_tv);
+            toggleSound = (ToggleButton) view.findViewById(R.id.toggle_sound);
+            pieIV = (ImageView) view.findViewById(R.id.pie);
+
         }
 
         public void setChecked(boolean checked) {
@@ -177,11 +181,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
     @Override
     public int getItemViewType(int position) {
 
-        /*String freeTime = mDataset.get(position).getFreeTime();
+        String freeTime = events.get(position).getFreeTime();
         if (freeTime != null && !freeTime.isEmpty())
             return CARD_TYPE_FREE_TIME;
-        else*/
-        return CARD_TYPE_FULL;
+        else
+            return CARD_TYPE_FULL;
 
     }
 
@@ -200,14 +204,17 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
                         .inflate(R.layout.free_time, parent, false);
                 break;
         }
-        return new ViewHolder(v, -1);
+        return new ViewHolder(v);
     }
 
     @Override
     public long getItemId(int position) {
-        if (mCursor != null) {
+        /*if (mCursor != null) {
             mCursor.moveToPosition(position);
             return mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events._ID));
+        }*/
+        if (events != null) {
+            return events.get(position).get_id();
         }
         return -1;
     }
@@ -215,54 +222,55 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        if (mCursor != null) {
-            mCursor.moveToPosition(position);
+        //if (mCursor != null) {
+        //mCursor.moveToPosition(position);
 
-            holder.id = getItemId(position);
-
-            String eventName = mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_NAME));
-
-            /*String ff = "";
-
-            int j = RANDOM.nextInt(7);
-
-            for (int i = 0; i < j; i++)
-                ff += new_line;
-
-            eventName += ff;*/
-
-            boolean eventReminderNotify = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) == 0 ? false : true;
-
-            if (eventName != null && !eventName.isEmpty())
-                holder.mTextView.setText(eventName);
-            if (eventReminderNotify)
-                /*holder.setChecked(true);*/ holder.toggleSound.setChecked(true);
-            else
-                /*holder.setChecked(false);*/holder.toggleSound.setChecked(false);
-
-            /*String freeTime = mDataset.get(position).getFreeTime();
-            if (freeTime != null && !freeTime.isEmpty())
-                holder.freeTimeTV.setText(freeTime);*/
-
-
-            holder.pieIV.setImageBitmap(pieChartImage());
+        String freeTime = events.get(position).getFreeTime();
+        if (freeTime != null && !freeTime.isEmpty()) {
+            holder.freeTimeTV.setText(freeTime);
+            return;
         }
+
+
+        holder.id = getItemId(position);
+
+        //String eventName = mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_NAME));
+        //boolean eventReminderNotify = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) == 0 ? false : true;
+
+        String eventName = events.get(position).getName();
+        boolean eventReminderNotify = events.get(position).isReminderNotify();
+
+
+        if (eventName != null && !eventName.isEmpty())
+            holder.mTextView.setText(eventName);
+        if (eventReminderNotify)
+                holder.setChecked(true); /*holder.toggleSound.setChecked(true);*/
+        else
+                holder.setChecked(false);/*holder.toggleSound.setChecked(false);*/
+
+
+        holder.pieIV.setImageBitmap(pieChartImage(position));
+        //}
     }
 
     @Override
     public int getItemCount() {
-        if (mCursor == null) {
+        /*if (mCursor == null) {
             return 0;
         } else {
             return mCursor.getCount();
-        }
+        }*/
+        return events.size();
     }
 
-    private Bitmap pieChartImage() {
+    private Bitmap pieChartImage(int position) {
 
-        boolean isAllDay = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_ALL_DAY)) > 0;
+        //boolean isAllDay = mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_ALL_DAY)) > 0;
 
-        long dateStart = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+        //long dateStart = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+
+        boolean isAllDay = events.get(position).isAllDay();
+        long dateStart = events.get(position).getDateStart();
 
 
         long startPoint = -90;
@@ -288,7 +296,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
             startPoint = (int) (calendar.getTimeInMillis() / (1000 * 60)) / 2;
 
-            long dateEnd = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END));
+            //long dateEnd = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END));
+            long dateEnd = events.get(position).getDateEnd();
+
             calendar.setTimeInMillis(dateEnd);
             hours = calendar.get(Calendar.HOUR_OF_DAY);
             minutes = calendar.get(Calendar.MINUTE);
@@ -325,4 +335,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> im
 
         return mBaggroundImage;
     }
+
+
 }

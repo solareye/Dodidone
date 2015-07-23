@@ -38,6 +38,7 @@ import com.prolificinteractive.materialcalendarview.OnDateChangedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -338,8 +339,9 @@ public class MainActivity extends AppCompatActivity {
 
             switch (loader.getId()) {
                 case EVENTS_LOADER_ID:
-                    ((SetingCursorListener) mAdapter).onSetCursor(cursor);
-                    headerAdapter.onSetCursor(cursor);
+                    List<EventModel> dataSet = compareDataList(cursor);
+                    ((SetingCursorListener) mAdapter).onSetCursor(dataSet);
+                    headerAdapter.onSetCursor(dataSet);
 
                     initCalendarView(cursor);
 
@@ -528,6 +530,59 @@ public class MainActivity extends AppCompatActivity {
         public void onMonthChanged(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
             String month = simpleMonthFormat.format(calendarDay.getDate());
             monthBtn.setText(month);
+        }
+
+        private List<EventModel> compareDataList(Cursor mCursor) {
+
+            List<EventModel> events = new ArrayList<>();
+
+            if (mCursor != null) {
+
+                EventModel event = null;
+
+                while (mCursor.moveToNext()) {
+
+
+                    long dateStart = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+
+                    if (event != null) {
+
+                        long difference =  dateStart - event.getDateEnd();
+
+                        if(difference > 0) {
+                            long freeTimeDateStart = event.getDateEnd();
+
+                            String freeTime = DateFormatHelper.correctingFreeTime(difference);
+
+                            event = new EventModel(freeTime, freeTimeDateStart);
+                            events.add(event);
+                        }
+                    }
+
+
+                    event = new EventModel();
+
+                    event.set_id(mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events._ID)));
+                    event.setName(mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_NAME)));
+                    event.setDateStart(dateStart);
+                    event.setDateEnd(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_END)));
+                    event.setDuration(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DURATION)));
+                    event.setReminderFirst(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_FIRST)));
+                    event.setReminderSecond(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_SECOND)));
+                    event.setReminderNotify(mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REMINDER_NOTIFY)) > 0);
+                    event.setDetails(mCursor.getString(mCursor.getColumnIndex(EventsContract.Events.EVENT_DETAILS)));
+
+                    event.setAllDay(mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_ALL_DAY)) > 0);
+                    event.setRepeat(mCursor.getInt(mCursor.getColumnIndex(EventsContract.Events.EVENT_REPEAT)));
+                    event.setRepeatUntil(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_REPEAT_UNTIL)));
+
+                    events.add(event);
+                }
+
+
+            }
+            return events;
+
         }
 
         /*@TargetApi(Build.VERSION_CODES.LOLLIPOP)

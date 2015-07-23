@@ -28,6 +28,9 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     //compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
+
+    //compile 'com.timehop.stickyheadersrecyclerview:library:0.4.1@aar'
+
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.prolificinteractive:material-calendarview:0.6.1'

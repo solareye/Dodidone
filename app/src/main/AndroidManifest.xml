@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mobile.solareye.dodidone">
 
+
+    <uses-sdk
+        android:minSdkVersion="22"
+        android:targetSdkVersion="22" />
+
     <permission
         android:name="mobile.solareye.dodidone.READ_EVENTS"
         android:description="@string/permission_description"

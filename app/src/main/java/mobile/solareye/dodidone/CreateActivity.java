@@ -423,7 +423,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
                 intent.putExtras(extras);
                 sendBroadcast(intent);
 
-                finish();
+                this.supportFinishAfterTransition();
             }
         } else
             Toast.makeText(this, R.string.empty_event_name_field_error, Toast.LENGTH_SHORT).show();
@@ -492,6 +492,7 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
     @OnClick(R.id.fab)
     public void close(View v) {
 
+        content.setVisibility(View.INVISIBLE);
         this.supportFinishAfterTransition();
     }
 

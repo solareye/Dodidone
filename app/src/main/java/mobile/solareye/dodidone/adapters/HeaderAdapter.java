@@ -1,6 +1,5 @@
 package mobile.solareye.dodidone.adapters;
 
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,13 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import mobile.solareye.dodidone.R;
-import mobile.solareye.dodidone.data.EventsContract;
+import mobile.solareye.dodidone.data.EventModel;
 import mobile.solareye.dodidone.listeners.SetingCursorListener;
 import mobile.solareye.dodidone.util.DateFormatHelper;
 
@@ -30,14 +30,16 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
     private static SimpleDateFormat dateFormatMonthDay = new SimpleDateFormat(
             "d");
 
-    private static Cursor mCursor;
+    //private static Cursor mCursor;
+    private List<EventModel> events;
 
     public HeaderAdapter() {
     }
 
     @Override
-    public void onSetCursor(Cursor cursor) {
-        this.mCursor = cursor;
+    public void onSetCursor(List<EventModel> dataSet) {
+        //this.mCursor = cursor;
+        events = dataSet;
     }
 
     @Override
@@ -50,15 +52,16 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
     @Override
     public void onBindViewHolder(ViewHolder headerViewHolder, int position) {
 
-        if (mCursor != null) {
-            mCursor.moveToPosition(position);
+        //if (mCursor != null) {
+           // mCursor.moveToPosition(position);
 
-            String[] dayConv = convertDate(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START)));
+            //String[] dayConv = convertDate(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START)));
+        String[] dayConv = convertDate(events.get(position).getDateStart());
 
 
             headerViewHolder.month_day.setText(dayConv[0]);
             headerViewHolder.week_day.setText(dayConv[1]);
-        }
+        //}
     }
 
     @Override
@@ -95,10 +98,16 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
     private long convertHeaderId(int position) {
 
-        if (mCursor != null) {
+        /*if (mCursor != null) {
             mCursor.moveToPosition(position);
 
             long headerId = mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
+
+            return DateFormatHelper.clearTimeOfDate(headerId);
+        }*/
+        if(events != null && events.size() > 0) {
+
+            long headerId = events.get(position).getDateStart();
 
             return DateFormatHelper.clearTimeOfDate(headerId);
         }
