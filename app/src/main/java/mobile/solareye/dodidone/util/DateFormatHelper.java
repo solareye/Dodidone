@@ -34,7 +34,7 @@ public class DateFormatHelper {
 
     public static String correctingFreeTime(long timeInMillis) {
 
-        String correctedFreeTime = "";
+        String correctedFreeTime;
 
         int oneHour = 1000 * 60 * 60;
 
@@ -42,11 +42,13 @@ public class DateFormatHelper {
 
         int hours = (int) timeInMillis / oneHour;
 
-        int minutes = 0;
+        int minutes;
 
         if(hours > 0) {
             minutes = ((int) timeInMillis - hours * oneHour) / oneMinute;
-            correctedFreeTime = hours + " hours " + minutes + " minutes free time";
+            correctedFreeTime = hours + " hours";
+            if (minutes > 0)
+                correctedFreeTime += " " + minutes + " minutes free time";
         }
         else {
             minutes = (int) timeInMillis / oneMinute;

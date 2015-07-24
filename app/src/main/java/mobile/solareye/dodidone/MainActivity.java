@@ -2,6 +2,7 @@ package mobile.solareye.dodidone;
 
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
             mRecyclerView.setLayoutManager(/*new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)*/
                                            /*new GridLayoutManager(getActivity(), 2)*/
-                                           new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
+                    new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
 
             initToolbar();
 
@@ -206,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
 
             stickyHeadersBuilder.setStickyHeadersAdapter(headerAdapter);
             stickyHeadersBuilder.setOnHeaderClickListener(this);
-            stickyHeadersBuilder.build();
 
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.addItemDecoration(stickyHeadersBuilder.build());
@@ -220,7 +220,8 @@ public class MainActivity extends AppCompatActivity {
                                     /*String freeTime = eventsDataProvider.getItems().get(position).getFreeTime();
                                     if(freeTime != null && !freeTime.isEmpty())
                                         return false;
-                                    else*/ return true;
+                                    else*/
+                                    return true;
                                 }
 
                                 @Override
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     long id = mAdapter.getItemId(position);
 
-                                    mActivity.getContentResolver().delete(EventsContract.Events.CONTENT_URI, EventsContract.Events._ID + " = ?", new String[] {String.valueOf(id)});
+                                    mActivity.getContentResolver().delete(EventsContract.Events.CONTENT_URI, EventsContract.Events._ID + " = ?", new String[]{String.valueOf(id)});
 
                                     //mAdapter.notifyItemRemoved(position);
 
@@ -236,6 +237,14 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onArchive(RecyclerViewAdapter recyclerView, int position) {
+
+                                    long id = mAdapter.getItemId(position);
+
+                                    ContentValues contentValues = new ContentValues();
+                                    contentValues.put(EventsContract.Events.EVENT_SATISFIED, 1);
+
+                                    mActivity.getContentResolver().update(EventsContract.Events.CONTENT_URI, contentValues, EventsContract.Events._ID + " = ?", new String[]{String.valueOf(id)});
+
                                     //eventsDataProvider.getItems().remove(position);
                                     //mAdapter.notifyItemRemoved(position);
                                 }
@@ -289,7 +298,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(mActivity, "Click on headerId " + headerId, Toast.LENGTH_SHORT).show();
         }
 
-        @OnClick(R.id.fab) void createNewEvent(View createBtn) {
+        @OnClick(R.id.fab)
+        void createNewEvent(View createBtn) {
             int[] startingLocation = new int[2];
             createBtn.getLocationOnScreen(startingLocation);
             startingLocation[0] += createBtn.getWidth() / 2;
@@ -307,8 +317,8 @@ public class MainActivity extends AppCompatActivity {
                             mActivity,
                             EventsContract.Events.CONTENT_URI,
                             null,
-                            null,
-                            null,
+                            EventsContract.Events.EVENT_DATE_START + " >= ? AND " + EventsContract.Events.EVENT_SATISFIED + " = ?",
+                            new String[]{String.valueOf(DateFormatHelper.clearTimeOfDate(Calendar.getInstance().getTimeInMillis())), "0"},
                             EventsContract.Events.EVENT_DATE_START + " ASC"
                     );
 
@@ -343,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
                     ((SetingCursorListener) mAdapter).onSetCursor(dataSet);
                     headerAdapter.onSetCursor(dataSet);
 
-                    initCalendarView(cursor);
+                    initCalendarView();
 
                     break;
 
@@ -434,11 +444,10 @@ public class MainActivity extends AppCompatActivity {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        void initCalendarView(Cursor cursor) {
+        void initCalendarView() {
 
             calendarView.setOnDateChangedListener(this);
 
-            shapeDays(cursor);
             // Add a decorator to disable prime numbered days
             calendarView.addDecorator(new CalendarDayDisableDecorator(getDays()));
 
@@ -448,29 +457,6 @@ public class MainActivity extends AppCompatActivity {
         public void onDateChanged(MaterialCalendarView materialCalendarView, @Nullable CalendarDay calendarDay) {
 
             mRecyclerView.scrollToPosition(0);
-        }
-
-        private void shapeDays(Cursor cursor) {
-
-            List<Long> days = new LinkedList<>();
-
-            while (cursor.moveToNext()) {
-
-                    long day = cursor.getLong(cursor.getColumnIndex(EventsContract.Events.EVENT_DATE_START));
-
-                    day = DateFormatHelper.clearTimeOfDate(day);
-
-                if(!days.contains(day))
-                    days.add(day);
-
-                if(cursor.isFirst())
-                    setMinDate(day);
-                if(cursor.isLast())
-                    setMaxDate(day);
-            }
-
-            setDays(days);
-
         }
 
         private void setMinDate(long day) {
@@ -539,6 +525,7 @@ public class MainActivity extends AppCompatActivity {
             if (mCursor != null) {
 
                 EventModel event = null;
+                List<Long> days = new LinkedList<>();
 
                 while (mCursor.moveToNext()) {
 
@@ -547,9 +534,34 @@ public class MainActivity extends AppCompatActivity {
 
                     if (event != null) {
 
-                        long difference =  dateStart - event.getDateEnd();
+                        long freeDateStart = dateStart;
 
-                        if(difference > 0) {
+                        long dateEnd = event.getDateEnd();
+
+                        Calendar calStart = Calendar.getInstance();
+                        Calendar calEnd = Calendar.getInstance();
+
+                        calStart.setTimeInMillis(dateStart);
+                        calEnd.setTimeInMillis(dateEnd);
+
+                        int startDay, startMonth, startYear, endDay, endMonth, endYear;
+
+                        startDay = calStart.get(Calendar.DAY_OF_MONTH);
+                        startMonth = calStart.get(Calendar.MONTH);
+                        startYear = calStart.get(Calendar.YEAR);
+
+                        endDay = calEnd.get(Calendar.DAY_OF_MONTH);
+                        endMonth = calEnd.get(Calendar.MONTH);
+                        endYear = calEnd.get(Calendar.YEAR);
+
+                        if (startDay != endDay || startMonth != endMonth || startYear != endYear) {
+                            calEnd.add(Calendar.DAY_OF_YEAR, 1);
+                            freeDateStart = DateFormatHelper.clearTimeOfDate(calEnd.getTimeInMillis());
+                        }
+
+                        long difference = freeDateStart - dateEnd;
+
+                        if (difference > 0) {
                             long freeTimeDateStart = event.getDateEnd();
 
                             String freeTime = DateFormatHelper.correctingFreeTime(difference);
@@ -577,8 +589,21 @@ public class MainActivity extends AppCompatActivity {
                     event.setRepeatUntil(mCursor.getLong(mCursor.getColumnIndex(EventsContract.Events.EVENT_REPEAT_UNTIL)));
 
                     events.add(event);
+
+
+                    // shape calendar days
+
+                    if (!days.contains(dateStart))
+                        days.add(dateStart);
+
+                    if (mCursor.isFirst())
+                        setMinDate(dateStart);
+                    if (mCursor.isLast())
+                        setMaxDate(dateStart);
+
                 }
 
+                setDays(days);
 
             }
             return events;

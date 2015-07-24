@@ -61,6 +61,7 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
             headerViewHolder.month_day.setText(dayConv[0]);
             headerViewHolder.week_day.setText(dayConv[1]);
+
         //}
     }
 

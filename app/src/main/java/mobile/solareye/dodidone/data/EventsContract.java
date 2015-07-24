@@ -34,6 +34,7 @@ public class EventsContract {
 
         public static final String EVENT_REPEAT = "repeat";
         public static final String EVENT_REPEAT_UNTIL = "repeat_until";
+        public static final String EVENT_SATISFIED = "satisfied";
     }
 
 }

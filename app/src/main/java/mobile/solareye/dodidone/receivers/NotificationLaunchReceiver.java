@@ -36,7 +36,7 @@ public class NotificationLaunchReceiver extends BroadcastReceiver {
 
         JobInfo.Builder builder = new JobInfo.Builder(0, new ComponentName(context, ReminderNotificationJobService.class));
 
-        builder.setPeriodic(35 * 1000L);
+        //builder.setPeriodic(35 * 1000L);
         builder.setExtras(extras);
 
         JobScheduler jobScheduler =

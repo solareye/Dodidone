@@ -39,25 +39,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + EventsContract.Events.EVENT_REMINDER_NOTIFY + " INTEGER, "
                 + EventsContract.Events.EVENT_REPEAT + " INTEGER, "
                 + EventsContract.Events.EVENT_REPEAT_UNTIL + " INTEGER, "
-                + EventsContract.Events.EVENT_DETAILS + " TEXT);";
+                + EventsContract.Events.EVENT_DETAILS + " TEXT, "
+                + EventsContract.Events.EVENT_SATISFIED + " INTEGER DEFAULT 0);";
 
         db.execSQL(CREATE_EVENTS_TABLE);
-
-        /*for (EventModel event : EventsDataProvider.events) {
-
-            if (event.getName() == null)
-                continue;
-
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(EventsContract.Events.EVENT_NAME, event.getName());
-            contentValues.put(EventsContract.Events.EVENT_DATE_START, event.getDateStart());
-            contentValues.put(EventsContract.Events.EVENT_DATE_END, event.getDateEnd());
-            contentValues.put(EventsContract.Events.EVENT_DURATION, event.getDuration());
-            contentValues.put(EventsContract.Events.EVENT_REMINDER, event.getReminder());
-            contentValues.put(EventsContract.Events.EVENT_DETAILS, event.getDetails());
-
-            db.insert(TABLE_EVENTS, null, contentValues);
-        }*/
 
     }
     @Override
