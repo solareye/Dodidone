@@ -1,16 +1,10 @@
 package mobile.solareye.dodidone.receivers;
 
-import android.annotation.TargetApi;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.PersistableBundle;
 
-import mobile.solareye.dodidone.services.ReminderNotificationJobService;
+import mobile.solareye.dodidone.services.ReminderNotificationIntentService;
 
 public class NotificationLaunchReceiver extends BroadcastReceiver {
 
@@ -20,15 +14,21 @@ public class NotificationLaunchReceiver extends BroadcastReceiver {
         boolean launch = intent.getBooleanExtra("launch", false);
         String contentUri = intent.getStringExtra("content_uri");
 
-        if (launch)
+        /*if (launch)
             startJobService(context, contentUri);
-        else stopAllJobServices(context);
+        else stopAllJobServices(context);*/
 
-
-        //throw new UnsupportedOperationException("Not yet implemented");
+        if (launch)
+            startReminderService(context, contentUri);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    void startReminderService(Context context, String contentUri) {
+
+        ReminderNotificationIntentService.startActionReminderNotify(context, contentUri);
+
+    }
+
+    /*@TargetApi(Build.VERSION_CODES.LOLLIPOP)
     void startJobService(Context context, String contentUri) {
 
         PersistableBundle extras = new PersistableBundle();
@@ -42,7 +42,7 @@ public class NotificationLaunchReceiver extends BroadcastReceiver {
         JobScheduler jobScheduler =
                 (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-        jobScheduler.schedule(builder.build());
+        //jobScheduler.schedule(builder.build());
 
     }
 
@@ -50,5 +50,5 @@ public class NotificationLaunchReceiver extends BroadcastReceiver {
     void stopAllJobServices(Context context) {
         JobScheduler tm = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         tm.cancelAll();
-    }
+    }*/
 }

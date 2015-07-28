@@ -456,7 +456,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDateChanged(MaterialCalendarView materialCalendarView, @Nullable CalendarDay calendarDay) {
 
-            mRecyclerView.scrollToPosition(0);
+            int position = headerAdapter.headerPosition.get(calendarDay.getDate().getTime());
+
+            //mRecyclerView.scrollToPosition(position);
+            ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 20);
+            //mRecyclerView.smoothScrollToPosition(position);
         }
 
         private void setMinDate(long day) {
@@ -592,6 +596,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                     // shape calendar days
+
+                    dateStart = DateFormatHelper.clearTimeOfDate(dateStart);
 
                     if (!days.contains(dateStart))
                         days.add(dateStart);

@@ -10,6 +10,7 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +33,8 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
     //private static Cursor mCursor;
     private List<EventModel> events;
+
+    public static HashMap<Long, Integer> headerPosition = new HashMap<>();
 
     public HeaderAdapter() {
     }
@@ -110,7 +113,11 @@ public class HeaderAdapter implements StickyHeadersAdapter<HeaderAdapter.ViewHol
 
             long headerId = events.get(position).getDateStart();
 
-            return DateFormatHelper.clearTimeOfDate(headerId);
+            headerId = DateFormatHelper.clearTimeOfDate(headerId);
+
+            headerPosition.put(headerId, position);
+
+            return headerId;
         }
         return 0;
 
