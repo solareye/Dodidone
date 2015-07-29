@@ -42,7 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         private FragmentActivity mActivity;
 
-        private List<Long> days = new LinkedList<>();
+        HashMap<Long, Integer> days = new HashMap<>();
 
         public PlaceholderFragment() {
         }
@@ -456,11 +456,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDateChanged(MaterialCalendarView materialCalendarView, @Nullable CalendarDay calendarDay) {
 
-            int position = headerAdapter.headerPosition.get(calendarDay.getDate().getTime());
+            long time = calendarDay.getDate().getTime();
 
-            //mRecyclerView.scrollToPosition(position);
-            ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 20);
-            //mRecyclerView.smoothScrollToPosition(position);
+            int position = days.get(time);
+
+            //((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 0);
+            mRecyclerView.smoothScrollToPosition(position);
+
         }
 
         private void setMinDate(long day) {
@@ -487,11 +489,11 @@ public class MainActivity extends AppCompatActivity {
             calendarView.setMaximumDate(cal.getTime());
         }
 
-        public List<Long> getDays() {
+        public HashMap<Long, Integer> getDays() {
             return days;
         }
 
-        public void setDays(List<Long> days) {
+        public void setDays(HashMap<Long, Integer> days) {
             this.days = days;
         }
 
@@ -529,7 +531,8 @@ public class MainActivity extends AppCompatActivity {
             if (mCursor != null) {
 
                 EventModel event = null;
-                List<Long> days = new LinkedList<>();
+
+                HashMap<Long, Integer> days = new HashMap<>();
 
                 while (mCursor.moveToNext()) {
 
@@ -599,8 +602,10 @@ public class MainActivity extends AppCompatActivity {
 
                     dateStart = DateFormatHelper.clearTimeOfDate(dateStart);
 
-                    if (!days.contains(dateStart))
-                        days.add(dateStart);
+                    int position = events.size() - 1;
+
+                    if (!days.containsKey(dateStart) || (days.containsKey(dateStart) && days.get(dateStart) > position))
+                        days.put(dateStart, position);
 
                     if (mCursor.isFirst())
                         setMinDate(dateStart);

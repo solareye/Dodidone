@@ -4,24 +4,23 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by amelikov on 02/07/15.
  */
 public class CalendarDayDisableDecorator implements DayViewDecorator {
 
-    private List<Long> days = new LinkedList<>();
+    private HashMap<Long, Integer> days = new HashMap<>();
 
-    public CalendarDayDisableDecorator(List<Long> days) {
+    public CalendarDayDisableDecorator(HashMap<Long, Integer> days) {
         this.days = days;
     }
 
     @Override
     public boolean shouldDecorate(CalendarDay day) {
 
-        boolean is = days.contains(day.getDate().getTime());
+        boolean is = days.containsKey(day.getDate().getTime());
         return !is;
     }
 

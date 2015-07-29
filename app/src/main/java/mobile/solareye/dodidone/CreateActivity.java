@@ -265,11 +265,22 @@ public class CreateActivity extends AppCompatActivity implements RevealBackgroun
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
 
+                    if(cal == calStart && (calEnd.get(Calendar.DAY_OF_MONTH) < dayOfMonth ||
+                                           calEnd.get(Calendar.MONTH) < monthOfYear ||
+                                           calEnd.get(Calendar.YEAR) < year)) {
+
+                        calEnd.set(year, monthOfYear, dayOfMonth);
+
+                        event_date_end.setText(sdf.format(new Date(calEnd.getTimeInMillis())));
+                    }
+
                 cal.set(year, monthOfYear, dayOfMonth);
 
                 String repeatUntilText = view.getId() == R.id.event_repeat_till ? getResources().getString(R.string.event_repeat_till) + "\r\n" : "";
 
                 view.setText(repeatUntilText + sdf.format(new Date(cal.getTimeInMillis())));
+
+
             }
         }, year, monthOfYear, dayOfMonth);
 
